@@ -26,10 +26,10 @@ public class EnemySpawner : NetworkBehaviour
         );
 
         // 테스트용: 2초마다 적 생성
-        InvokeRepeating(nameof(SpawnFromPool), 2f, 2f);
+        InvokeRepeating(nameof(SpawnFromPool_Test), 2f, 2f);
     }
 
-    private void SpawnFromPool()
+    private void SpawnFromPool_Test()
     {
         var enemy = _pool.Get();
         // 플레이어 근처 랜덤 위치에 배치 (지금은 단순 랜덤)

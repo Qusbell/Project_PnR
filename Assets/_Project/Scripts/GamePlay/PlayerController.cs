@@ -1,43 +1,37 @@
-﻿using Unity.Netcode;
+﻿using System.Globalization;
+using Unity.Netcode;
 using UnityEngine;
 
-[RequireComponent(typeof(PlayerInputHandler), typeof(Mover))]
+
+[RequireComponent(typeof(IPlayerInput), typeof(IMover))]
 public class PlayerController : NetworkBehaviour
 {
-    private PlayerInputHandler _inputHandler;
-    private Mover _movement;
+    private IPlayerInput _inputHandler;
+    private IMover _mover;
+
+    private IPlayerInput InputHandler => _inputHandler ??= GetComponent<IPlayerInput>();
+    private IMover Mover => _mover ??= GetComponent<IMover>();
 
     public override void OnNetworkSpawn()
     {
-        _inputHandler = GetComponent<PlayerInputHandler>();
-        _movement = GetComponent<Mover>();
-
-        // 로컬 플레이어일 때만 입력 시스템 초기화
         if (IsOwner)
         {
-            _inputHandler.Initialize();
+            InputHandler.Initialize();
         }
         else
         {
-            // 타인 캐릭터의 입력 핸들러는 비활성화하여 오버헤드 감소
-            _inputHandler.enabled = false;
+            if (InputHandler is MonoBehaviour mb) mb.enabled = false;
         }
     }
 
     void Update()
     {
-        // 내 캐릭터가 아니면 로직을 실행하지 않음 (네트워크 최적화)
         if (!IsOwner) return;
-
-        // 조율: 입력을 읽어서 이동으로 전달
-        _movement.Move(_inputHandler.MoveInput);
+        Mover.Move(InputHandler.MoveInput);
     }
 
     public override void OnNetworkDespawn()
     {
-        if (IsOwner)
-        {
-            _inputHandler.DisableInput();
-        }
+        if (IsOwner) InputHandler.DisableInput();
     }
 }

@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerInputHandler : MonoBehaviour
+
+public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 {
     private InputSystem_Actions _inputActions;
     public Vector2 MoveInput { get; private set; }
