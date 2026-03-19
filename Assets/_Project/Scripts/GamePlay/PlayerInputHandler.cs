@@ -1,16 +1,16 @@
 ﻿using UnityEngine;
-using UnityEngine.InputSystem;
-
 
 public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 {
     private InputSystem_Actions _inputActions;
-    public Vector2 MoveInput { get; private set; }
+    private Vector2 _moveInput;
+
+    private InputSystem_Actions InputActions => _inputActions ??= new InputSystem_Actions();
+    public Vector2 MoveInput => _moveInput;
 
     public void Initialize()
     {
-        _inputActions = new InputSystem_Actions();
-        _inputActions.Player.Enable();
+        InputActions.Player.Enable();
     }
 
     public void DisableInput()
@@ -18,8 +18,8 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
         _inputActions?.Player.Disable();
     }
 
-    void Update()
+    private void Update()
     {
-        MoveInput = _inputActions.Player.Move.ReadValue<Vector2>();
+        _moveInput = InputActions.Player.Move.ReadValue<Vector2>();
     }
 }

@@ -1,37 +1,45 @@
-﻿using System.Globalization;
-using Unity.Netcode;
+﻿using Unity.Netcode;
 using UnityEngine;
-
 
 [RequireComponent(typeof(IPlayerInput), typeof(IMover))]
 public class PlayerController : NetworkBehaviour
 {
     private IPlayerInput _inputHandler;
-    private IMover _mover;
-
     private IPlayerInput InputHandler => _inputHandler ??= GetComponent<IPlayerInput>();
+
+    private IMover _mover;
     private IMover Mover => _mover ??= GetComponent<IMover>();
 
     public override void OnNetworkSpawn()
     {
         if (IsOwner)
         {
-            InputHandler.Initialize();
+            InputHandler?.Initialize();
         }
         else
         {
-            if (InputHandler is MonoBehaviour mb) mb.enabled = false;
+            if (InputHandler is MonoBehaviour mb)
+            {
+                mb.enabled = false;
+            }
         }
     }
 
-    void Update()
+    private void Update()
     {
-        if (!IsOwner) return;
+        if (!IsOwner)
+        {
+            return;
+        }
+
         Mover.Move(InputHandler.MoveInput);
     }
 
     public override void OnNetworkDespawn()
     {
-        if (IsOwner) InputHandler.DisableInput();
+        if (IsOwner)
+        {
+            InputHandler?.DisableInput();
+        }
     }
 }
