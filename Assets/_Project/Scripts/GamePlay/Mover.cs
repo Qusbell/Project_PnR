@@ -3,7 +3,7 @@
 /// <summary>
 /// IMover 인터페이스의 기본 구현체
 /// </summary>
-public class Mover : MonoBehaviour, IMover
+public class Mover : MonoBehaviour, IMovable
 {
     [field: SerializeField]
     public float MoveSpeed { get; private set; } = 5f;

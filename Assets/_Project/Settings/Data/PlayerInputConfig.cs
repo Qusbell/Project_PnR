@@ -1,17 +1,17 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "PlayerInputConfig", menuName = "PnR/Config/PlayerInput")]
-public class PlayerInputConfig : ScriptableObject
+public class PlayerInputConfig : ScriptableObject, IInputConfig
 {
-    [field: SerializeField, Header("Charging Settings")]
-    public float MaxChargeTime { get; private set; } = 2.0f;
+    [Header("Input Delay")]
+    [field: SerializeField]
+    public float DiagonalDelay { get; private set; } = 0.08f;
 
     [field: SerializeField]
-    public float MinChargeThreshold { get; private set; } = 0.2f;
+    public float ReleaseDelay { get; private set; } = 0.05f;
 
-    [field: SerializeField, Header("Attack Settings")]
-    public float BaseDamage { get; private set; } = 10f;
 
+    [Header("DeadZone")]
     [field: SerializeField]
-    public float MaxDamageMultiplier { get; private set; } = 3.0f;
+    public float DeadZone { get; private set; } = 0.5f;
 }

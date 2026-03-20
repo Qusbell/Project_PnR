@@ -2,15 +2,31 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class InputHandler : MonoBehaviour
+public class InputHandler : MonoBehaviour, IPnREvents, ICompass
 {
     private InputSystem_Actions _inputActions;
-    private InputSystem_Actions InputActions => _inputActions ??= new @InputSystem_Actions();
+    private InputSystem_Actions InputActions => _inputActions ??= new();
 
-    public Vector2 MoveInput { get; private set; }
+    //[field: SerializeReference]
+    private IInputConfig InputConfig { get; set; }
 
-    private Vector2 IntentInput { get; set; }
-    // <-- 순환큐로 대각선 방향+시간 intent 저장
+    // 이동 방향
+    public Vector2 Direction { get; private set; }
+
+    // 의도 방향
+    private Vector2 IntentInput
+    {
+        get
+        {
+            var direction = Intents?.GetIntent();
+            if (direction.HasValue) { return direction.Value; }
+            else                    { return Direction; }
+        }
+    }
+
+    // 대각선 의도
+    private IntentBuffer _intentBuffer;
+    private IntentBuffer Intents => _intentBuffer ??= new(InputConfig.DiagonalDelay, 20, InputConfig.DeadZone);
 
     // 시간 + 방향 전달
     public event Action<float> OnPressed;
@@ -46,12 +62,12 @@ public class InputHandler : MonoBehaviour
     private void Update()
     {
         // 매 프레임 현재 입력 값을 읽어오기
-        MoveInput = InputActions.Player.Move.ReadValue<Vector2>();
+        Direction = InputActions.Player.Move.ReadValue<Vector2>();
 
         // IntentInput(대각선 입력 등) 처리
-        if (MoveInput != Vector2.zero)
+        if (Direction != Vector2.zero)
         {
-            IntentInput = MoveInput; // 혹은 순환 큐에 데이터 삽입 로직
+            Intents.SetIntent(Direction, Time.time);
         }
     }
 

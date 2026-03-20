@@ -101,10 +101,10 @@ GameObject:
   m_Component:
   - component: {fileID: 7143782501709243160}
   - component: {fileID: 2036473655789039277}
-  - component: {fileID: 410614146782636703}
   - component: {fileID: -202364517050422328}
   - component: {fileID: -5224586294750965240}
-  - component: {fileID: 7941942102125813087}
+  - component: {fileID: 410614146782636703}
+  - component: {fileID: -478808871732583396}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -153,19 +153,6 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
---- !u!114 &410614146782636703
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8282932059691489664}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5acc68de8a641a24ab2bb9f08cbcf199, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  _config: {fileID: 11400000, guid: b0d5d3632d0127b469e198180afb3a2b, type: 2}
 --- !u!114 &-202364517050422328
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -225,7 +212,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Mover
   <MoveSpeed>k__BackingField: 5
---- !u!114 &7941942102125813087
+--- !u!114 &410614146782636703
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -234,7 +221,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 8282932059691489664}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 005e99fc785958543b54c91e7c97eace, type: 3}
+  m_Script: {fileID: 11500000, guid: 5acc68de8a641a24ab2bb9f08cbcf199, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerInputHandler
-  _config: {fileID: 11400000, guid: b0d5d3632d0127b469e198180afb3a2b, type: 2}
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+--- !u!114 &-478808871732583396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8282932059691489664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4381745dca7079a48bc628b23caccd5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InputHandler

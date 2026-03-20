@@ -12,7 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3eea2f325ecf6e144a39204bd2c1ce61, type: 3}
   m_Name: PlayerInputConfig
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInputConfig
-  <MaxChargeTime>k__BackingField: 2
-  <MinChargeThreshold>k__BackingField: 0.2
-  <BaseDamage>k__BackingField: 10
-  <MaxDamageMultiplier>k__BackingField: 3
+  <DiagonalDelay>k__BackingField: 0.08
+  <ReleaseDelay>k__BackingField: 0.05
