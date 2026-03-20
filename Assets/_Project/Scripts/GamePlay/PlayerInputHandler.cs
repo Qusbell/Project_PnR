@@ -1,12 +1,15 @@
 ﻿using UnityEngine;
 
+/// <summary>
+/// Unity Input System을 사용하여 플레이어 입력을 처리합니다.
+/// </summary>
 public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 {
     private InputSystem_Actions _inputActions;
-    private Vector2 _moveInput;
-
     private InputSystem_Actions InputActions => _inputActions ??= new InputSystem_Actions();
-    public Vector2 MoveInput => _moveInput;
+
+    [field: SerializeField]
+    public Vector2 MoveInput { get; private set; }
 
     public void Initialize()
     {
@@ -20,6 +23,7 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 
     private void Update()
     {
-        _moveInput = InputActions.Player.Move.ReadValue<Vector2>();
+        // 프로퍼티를 통해서만 값을 설정합니다.
+        MoveInput = InputActions.Player.Move.ReadValue<Vector2>();
     }
 }

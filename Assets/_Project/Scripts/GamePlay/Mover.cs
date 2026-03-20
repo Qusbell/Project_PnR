@@ -1,12 +1,16 @@
 ﻿using UnityEngine;
 
+/// <summary>
+/// IMover 인터페이스의 기본 구현체
+/// </summary>
 public class Mover : MonoBehaviour, IMover
 {
-    [SerializeField]
-    private float _moveSpeed = 5f;
+    [field: SerializeField]
+    public float MoveSpeed { get; private set; } = 5f;
 
-    public float MoveSpeed => _moveSpeed;
-
+    /// <summary>
+    /// 입력된 방향으로 오브젝트를 이동시킵니다.
+    /// </summary>
     public void Move(Vector2 direction)
     {
         if (direction.sqrMagnitude < 0.01f)

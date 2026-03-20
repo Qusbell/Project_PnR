@@ -6,7 +6,6 @@
 public interface IPlayerInput
 {
     Vector2 MoveInput { get; }
-
     void Initialize();
     void DisableInput();
 }
