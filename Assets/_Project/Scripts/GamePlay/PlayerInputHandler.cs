@@ -1,29 +1,72 @@
 ﻿using UnityEngine;
+using System;
+using UnityEngine.InputSystem;
 
-/// <summary>
-/// Unity Input System을 사용하여 플레이어 입력을 처리합니다.
-/// </summary>
 public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 {
-    private InputSystem_Actions _inputActions;
-    private InputSystem_Actions InputActions => _inputActions ??= new InputSystem_Actions();
+    [SerializeField] private PlayerInputConfig _config;
 
-    [field: SerializeField]
-    public Vector2 MoveInput { get; private set; }
+    private @InputSystem_Actions _inputActions;
+    private Vector2 _moveInput;
+    private float _chargeStartTime;
+    private bool _isCharging;
+
+    // Properties
+    private @InputSystem_Actions InputActions => _inputActions ??= new @InputSystem_Actions();
+    public Vector2 MoveInput => _moveInput;
+    public bool IsCharging => _isCharging;
+    public float ChargeRatio => _isCharging
+        ? Mathf.Clamp01((Time.time - _chargeStartTime) / _config.MaxChargeTime)
+        : 0f;
+
+    public event Action<float> OnAttackReleased;
 
     public void Initialize()
     {
         InputActions.Player.Enable();
+
+        // Attack 버튼 이벤트 바인딩
+        InputActions.Player.Attack.started += StartCharge;
+        InputActions.Player.Attack.canceled += ReleaseCharge;
     }
 
     public void DisableInput()
     {
-        _inputActions?.Player.Disable();
+        if (_inputActions == null) { return; }
+
+        InputActions.Player.Attack.started -= StartCharge;
+        InputActions.Player.Attack.canceled -= ReleaseCharge;
+        InputActions.Player.Disable();
+    }
+
+    private void OnDestroy()
+    {
+        DisableInput();
     }
 
     private void Update()
     {
-        // 프로퍼티를 통해서만 값을 설정합니다.
-        MoveInput = InputActions.Player.Move.ReadValue<Vector2>();
+        _moveInput = InputActions.Player.Move.ReadValue<Vector2>();
+    }
+
+    private void StartCharge(InputAction.CallbackContext context)
+    {
+        _isCharging = true;
+        _chargeStartTime = Time.time;
+    }
+
+    private void ReleaseCharge(InputAction.CallbackContext context)
+    {
+        if (!_isCharging) { return; }
+
+        float duration = Time.time - _chargeStartTime;
+        _isCharging = false;
+
+        // 최소 충전 시간 체크 후 공격 이벤트 발생
+        if (duration >= _config.MinChargeThreshold)
+        {
+            float finalCharge = Mathf.Clamp01(duration / _config.MaxChargeTime);
+            OnAttackReleased?.Invoke(finalCharge);
+        }
     }
 }

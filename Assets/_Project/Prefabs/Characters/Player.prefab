@@ -165,7 +165,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5acc68de8a641a24ab2bb9f08cbcf199, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  ShowTopMostFoldoutHeaderGroup: 1
+  _config: {fileID: 11400000, guid: b0d5d3632d0127b469e198180afb3a2b, type: 2}
 --- !u!114 &-202364517050422328
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -224,7 +224,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e8d630e85d56f24bb5453ac6f28b35e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Mover
-  _moveSpeed: 5
+  <MoveSpeed>k__BackingField: 5
 --- !u!114 &7941942102125813087
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -237,3 +237,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 005e99fc785958543b54c91e7c97eace, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInputHandler
+  _config: {fileID: 11400000, guid: b0d5d3632d0127b469e198180afb3a2b, type: 2}

@@ -1,49 +1,52 @@
-﻿using Unity.Netcode;
-using UnityEngine;
+﻿using UnityEngine;
 
-/// <summary>
-/// 플레이어의 입력과 이동 로직을 연결하는 네트워크 컨트롤러
-/// </summary>
-[RequireComponent(typeof(IPlayerInput), typeof(IMover))]
-public class PlayerController : NetworkBehaviour
+[RequireComponent(typeof(PlayerInputHandler))]
+public class PlayerController : MonoBehaviour
 {
-    private IPlayerInput _inputHandler;
-    private IPlayerInput InputHandler => _inputHandler ??= GetComponent<IPlayerInput>();
+    private IPlayerInput _input;
+    [SerializeField] private PlayerInputConfig _config;
+    private bool _isAttacking;
 
-    private IMover _mover;
-    private IMover Mover => _mover ??= GetComponent<IMover>();
+    private IPlayerInput Input => _input ??= GetComponent<IPlayerInput>();
 
-    public override void OnNetworkSpawn()
+    private void Start()
     {
-        if (IsOwner)
-        {
-            InputHandler?.Initialize();
-        }
-        else
-        {
-            // 인터페이스가 MonoBehaviour인 경우 컴포넌트 비활성화
-            if (InputHandler is MonoBehaviour inputComponent)
-            {
-                inputComponent.enabled = false;
-            }
-        }
+        Input.Initialize();
+        Input.OnAttackReleased += (ratio) => _ = ExecuteAttackAsync(ratio);
     }
 
     private void Update()
     {
-        if (!IsOwner)
-        {
-            return;
-        }
-
-        Mover.Move(InputHandler.MoveInput);
+        if (_isAttacking) { return; }
+        HandleMovement();
     }
 
-    public override void OnNetworkDespawn()
+    private void HandleMovement()
     {
-        if (IsOwner)
+        // 이동 로직 (기존 Mover 활용 가능)
+        if (Input.MoveInput.sqrMagnitude > 0.01f)
         {
-            InputHandler?.DisableInput();
+            transform.Translate(Input.MoveInput * (Time.deltaTime * 5f));
         }
+    }
+
+    /// <summary>
+    /// 충전된 비율에 따라 공격을 수행하고 Unity 6 Awaitable로 대기합니다.
+    /// </summary>
+    private async Awaitable ExecuteAttackAsync(float chargeRatio)
+    {
+        _isAttacking = true;
+
+        float damage = _config.BaseDamage * (1f + (chargeRatio * (_config.MaxDamageMultiplier - 1f)));
+        Debug.Log($"[Attack] Charge: {chargeRatio * 100:F0}% | Damage: {damage:F1}");
+
+        // 공격 애니메이션 및 판정 로직이 들어갈 자리
+        // 예: 
+        await Awaitable.FixedUpdateAsync(); // 물리 판정 시점 대기
+
+        // 공격 후딜레이 (충전량이 많을수록 후딜레이 증가 예시)
+        await Awaitable.WaitForSecondsAsync(0.3f + (chargeRatio * 0.2f));
+
+        _isAttacking = false;
     }
 }
