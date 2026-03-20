@@ -4,10 +4,14 @@
 public class PlayerController : MonoBehaviour
 {
     private IPlayerInput _input;
+    private IMover _mover; // 기존 Mover 시스템 활용
+
     [SerializeField] private PlayerInputConfig _config;
     private bool _isAttacking;
 
+    // Lazy Initialization
     private IPlayerInput Input => _input ??= GetComponent<IPlayerInput>();
+    private IMover Mover => _mover ??= GetComponent<IMover>();
 
     private void Start()
     {
@@ -17,34 +21,28 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (_isAttacking) { return; }
-        HandleMovement();
-    }
-
-    private void HandleMovement()
-    {
-        // 이동 로직 (기존 Mover 활용 가능)
-        if (Input.MoveInput.sqrMagnitude > 0.01f)
+        if (_isAttacking)
         {
-            transform.Translate(Input.MoveInput * (Time.deltaTime * 5f));
+            // 공격 중에는 이동 멈춤 (필요 시)
+            Mover.Move(Vector2.zero);
+            return;
         }
+
+        // 기존 Mover 컴포넌트의 Move 메서드 호출
+        Mover.Move(Input.MoveInput);
     }
 
-    /// <summary>
-    /// 충전된 비율에 따라 공격을 수행하고 Unity 6 Awaitable로 대기합니다.
-    /// </summary>
     private async Awaitable ExecuteAttackAsync(float chargeRatio)
     {
         _isAttacking = true;
 
         float damage = _config.BaseDamage * (1f + (chargeRatio * (_config.MaxDamageMultiplier - 1f)));
-        Debug.Log($"[Attack] Charge: {chargeRatio * 100:F0}% | Damage: {damage:F1}");
+        Debug.Log($"[Attack] Power: {chargeRatio * 100:F0}% | Damage: {damage:F1}");
 
-        // 공격 애니메이션 및 판정 로직이 들어갈 자리
-        // 예: 
-        await Awaitable.FixedUpdateAsync(); // 물리 판정 시점 대기
+        // Unity 6 정식 Awaitable API 사용
+        await Awaitable.FixedUpdateAsync();
 
-        // 공격 후딜레이 (충전량이 많을수록 후딜레이 증가 예시)
+        // 공격 후딜레이 (충전량에 비례)
         await Awaitable.WaitForSecondsAsync(0.3f + (chargeRatio * 0.2f));
 
         _isAttacking = false;
