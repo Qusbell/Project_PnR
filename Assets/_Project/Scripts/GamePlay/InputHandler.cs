@@ -1,15 +1,14 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using CippSharp.Core.Interfaces;
 
 public class InputHandler : MonoBehaviour, IPnREvents, ICompass
 {
     private InputSystem_Actions _inputActions;
     private InputSystem_Actions InputActions => _inputActions ??= new();
 
-    [field: SerializeReference]
-    private IInputConfig InputConfig { get; set; }
+    [SerializeReference]
+    private IInputConfig InputConfig;
 
     // 이동 방향
     public Vector2 Direction { get; private set; }

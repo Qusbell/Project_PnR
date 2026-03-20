@@ -1,5 +1,7 @@
+using System;
 using UnityEngine;
 
+[Serializable]
 [CreateAssetMenu(fileName = "PlayerInputConfig", menuName = "PnR/Config/PlayerInput")]
 public class PlayerInputConfig : ScriptableObject, IInputConfig
 {
