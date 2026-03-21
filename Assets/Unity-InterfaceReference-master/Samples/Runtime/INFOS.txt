@@ -1,2 +1,0 @@
-"when we're building, we don't need these!"
-So Samples are #if#deffed with UNITY_EDITOR

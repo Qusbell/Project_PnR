@@ -1,9 +1,9 @@
-using System;
+﻿using System;
 using UnityEngine;
 
 [Serializable]
-[CreateAssetMenu(fileName = "PlayerInputConfig", menuName = "PnR/Config/PlayerInput")]
-public class PlayerInputConfig : ScriptableObject, IInputConfig
+[CreateAssetMenu(fileName = "InputConfig", menuName = "PnR/Config/Input")]
+public class InputConfig : ScriptableObject, IInputConfig
 {
     [Header("Input Delay")]
     [field: SerializeField]

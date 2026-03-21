@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -6,14 +6,18 @@ public class InputHandler : MonoBehaviour, IPnREvents, ICompass
 {
     private InputSystem_Actions _inputActions;
     private InputSystem_Actions InputActions => _inputActions ??= new();
+    
+    /// <summary>
+    /// ì¸ìŠ¤í™í„° í• ë‹¹ í•„ìš”
+    /// </summary>
+    [field:SerializeField]
+    private InputConfig InputConfig { get; set; }
 
-    [SerializeReference]
-    private IInputConfig InputConfig;
 
-    // ÀÌµ¿ ¹æÇâ
+    // ì…ë ¥ ë°©í–¥
     public Vector2 Direction { get; private set; }
 
-    // ÀÇµµ ¹æÇâ
+    // ì˜ë„ ë°©í–¥
     private Vector2 IntentInput
     {
         get
@@ -24,11 +28,11 @@ public class InputHandler : MonoBehaviour, IPnREvents, ICompass
         }
     }
 
-    // ´ë°¢¼± ÀÇµµ
+    // ëŒ€ê°ì„  ì˜ë„
     private IntentBuffer _intentBuffer;
     private IntentBuffer Intents => _intentBuffer ??= new(InputConfig.DiagonalDelay, 20, InputConfig.DeadZone);
 
-    // ½Ã°£ + ¹æÇâ Àü´Ş
+    // ì‹œê°„ + ë°©í–¥ ì „ë‹¬
     public event Action<float> OnPressed;
     public event Action<float, Vector2> OnReleased;
 
@@ -61,13 +65,13 @@ public class InputHandler : MonoBehaviour, IPnREvents, ICompass
 
     private void Update()
     {
-        // ¸Å ÇÁ·¹ÀÓ ÇöÀç ÀÔ·Â °ªÀ» ÀĞ¾î¿À±â
+        // ë§¤ í”„ë ˆì„ í˜„ì¬ ì…ë ¥ ê°’ì„ ì½ì–´ì˜¤ê¸°
         Direction = InputActions.Player.Move.ReadValue<Vector2>();
 
-        // IntentInput(´ë°¢¼± ÀÔ·Â µî) Ã³¸®
+        // IntentInput(ëŒ€ê°ì„  ì…ë ¥ ë“±) ì²˜ë¦¬
         if (Direction != Vector2.zero)
         {
-            Intents.SetIntent(Direction, Time.time);
+            Intents?.SetIntent(Direction, Time.time);
         }
     }
 
