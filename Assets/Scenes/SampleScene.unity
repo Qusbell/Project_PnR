@@ -190,7 +190,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
   ShowTopMostFoldoutHeaderGroup: 1
-  _enemyPrefab: {fileID: 8329969793768017196, guid: 672a2c6e490906448b7f4ed60925f13b, type: 3}
+  <EnemyPrefab>k__BackingField: {fileID: 8329969793768017196, guid: 672a2c6e490906448b7f4ed60925f13b, type: 3}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0

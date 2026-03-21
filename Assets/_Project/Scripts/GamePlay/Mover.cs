@@ -1,12 +1,20 @@
-﻿using UnityEngine;
+﻿using Unity.Netcode;
+using UnityEngine;
 
 /// <summary>
 /// IMover 인터페이스의 기본 구현체
 /// </summary>
-public class Mover : MonoBehaviour, IMovable
+public class Mover : NetworkBehaviour, IMovable
 {
+    // ==== Field ====
+
+    /// <summary>
+    /// <-- 스크립터블이든 NetVariable이든 뭐든 나중에 따로 빼둬야 할듯?
+    /// </summary>
     [field: SerializeField]
     public float MoveSpeed { get; private set; } = 5f;
+
+    // ==== Custom ====
 
     /// <summary>
     /// 입력된 방향으로 오브젝트를 이동시킵니다.
@@ -21,4 +29,6 @@ public class Mover : MonoBehaviour, IMovable
         Vector3 moveDelta = new Vector3(direction.x, direction.y, 0f) * MoveSpeed * Time.deltaTime;
         transform.position += moveDelta;
     }
+
+
 }

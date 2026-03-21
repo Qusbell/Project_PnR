@@ -103,8 +103,9 @@ GameObject:
   - component: {fileID: 2036473655789039277}
   - component: {fileID: -202364517050422328}
   - component: {fileID: -5224586294750965240}
-  - component: {fileID: 410614146782636703}
   - component: {fileID: -478808871732583396}
+  - component: {fileID: 5203593423511562816}
+  - component: {fileID: 5953345108417790602}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -211,19 +212,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e8d630e85d56f24bb5453ac6f28b35e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Mover
+  ShowTopMostFoldoutHeaderGroup: 1
   <MoveSpeed>k__BackingField: 5
---- !u!114 &410614146782636703
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8282932059691489664}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5acc68de8a641a24ab2bb9f08cbcf199, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
 --- !u!114 &-478808871732583396
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -236,4 +226,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4381745dca7079a48bc628b23caccd5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InputHandler
+  ShowTopMostFoldoutHeaderGroup: 1
   <InputConfig>k__BackingField: {fileID: 11400000, guid: b0d5d3632d0127b469e198180afb3a2b, type: 2}
+--- !u!114 &5203593423511562816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8282932059691489664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da8b3a0a4ba9dee4dbca3d7bc4ecb08e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MovementLinker
+--- !u!114 &5953345108417790602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8282932059691489664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49553e4d06ebfc44ab1097d3a3fc52a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BasicAttack

@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: PlayerInputConfig
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInputConfig
   <DiagonalDelay>k__BackingField: 0.08
-  <ReleaseDelay>k__BackingField: 0.05
+  <ReleaseDelay>k__BackingField: 0.08
+  <DeadZone>k__BackingField: 0.5

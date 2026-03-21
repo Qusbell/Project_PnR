@@ -1,10 +1,10 @@
-using System;
+ï»¿using System;
 using UnityEngine;
 
 /// <summary>
-/// Press & Release Event : ÇÃ·¹ÀÌ¾îÀÇ ´­·¶À» ¶¼, ¶¿ ¶§ Çàµ¿
+/// Press & Release Event : í”Œë ˆì´ì–´ì˜ ëˆŒë €ì„ ë–¼, ë—„ ë•Œ í–‰ë™
 /// </summary>
-public interface IPnREvents
+public interface IPnREvent
 {
     public event Action<float> OnPressed;
     public event Action<float, Vector2> OnReleased;
