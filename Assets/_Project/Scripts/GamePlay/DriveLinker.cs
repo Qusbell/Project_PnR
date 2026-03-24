@@ -2,16 +2,16 @@
 
 
 /// <summary>
-/// IMovable과 ICompass를 이어줌
+/// 방향성 이동을 이어줌
 /// </summary>
-[RequireComponent (typeof(IMovable))]
+[RequireComponent (typeof(IDriver))]
 [RequireComponent(typeof(ICompass))]
-public class MovementLinker : MonoBehaviour
+public class DriveLinker : MonoBehaviour
 {
     // ==== Component ====
 
-    private IMovable _movable;
-    private IMovable Movable => _movable ??= GetComponent<IMovable>();
+    private IDriver _driver;
+    private IDriver Driver => _driver ??= GetComponent<IDriver>();
 
     private ICompass _compass;
     private ICompass Compass => _compass ??= GetComponent<ICompass>();
@@ -21,6 +21,6 @@ public class MovementLinker : MonoBehaviour
 
     private void Update()
     {
-        Movable.Move(Compass.Direction);
+        Driver.MoveAt(Compass.Direction);
     }
 }

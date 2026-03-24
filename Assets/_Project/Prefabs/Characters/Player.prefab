@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3682272658143880816}
   - component: {fileID: 5341933599986511303}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Circle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -100,13 +100,16 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7143782501709243160}
+  - component: {fileID: -1933521975595012708}
+  - component: {fileID: -3659469140019189206}
   - component: {fileID: 2036473655789039277}
   - component: {fileID: -202364517050422328}
   - component: {fileID: -5224586294750965240}
   - component: {fileID: -478808871732583396}
   - component: {fileID: 5203593423511562816}
   - component: {fileID: 5953345108417790602}
-  m_Layer: 0
+  - component: {fileID: -7366171311504014956}
+  m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -129,6 +132,69 @@ Transform:
   - {fileID: 3682272658143880816}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!50 &-1933521975595012708
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8282932059691489664}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 6200000, guid: 9cedab908a348be40a4dfe0b6731f358, type: 2}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 1
+  m_SleepingMode: 1
+  m_CollisionDetection: 1
+  m_Constraints: 4
+--- !u!58 &-3659469140019189206
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8282932059691489664}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 6200000, guid: 9cedab908a348be40a4dfe0b6731f358, type: 2}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_Radius: 0.5
 --- !u!114 &2036473655789039277
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -212,7 +278,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e8d630e85d56f24bb5453ac6f28b35e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Mover
-  ShowTopMostFoldoutHeaderGroup: 1
   <MoveSpeed>k__BackingField: 5
 --- !u!114 &-478808871732583396
 MonoBehaviour:
@@ -252,3 +317,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49553e4d06ebfc44ab1097d3a3fc52a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BasicAttack
+--- !u!114 &-7366171311504014956
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8282932059691489664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 105f29ecc4936ea4daaa1101b4496438, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraTarget

@@ -17,21 +17,29 @@ public abstract class PnRAction : MonoBehaviour
 
     protected virtual void OnEnable()
     {
-        PnREvent.OnPressed += OnPressed;
-        PnREvent.OnReleased += OnReleased;
+        PnREvent.OnPressStarted += OnPressStarted;
+        PnREvent.OnPressConfirmed += OnPressConfirmed;
+        PnREvent.OnReleaseStarted += OnReleasStarted;
+        PnREvent.OnReleaseConfirmed += OnReleaseConfirmed;
     }
 
     protected virtual void OnDisable()
     {
-        PnREvent.OnPressed -= OnPressed;
-        PnREvent.OnReleased -= OnReleased;
+        PnREvent.OnPressStarted -= OnPressStarted;
+        PnREvent.OnPressConfirmed -= OnPressConfirmed;
+        PnREvent.OnReleaseStarted -= OnReleasStarted;
+        PnREvent.OnReleaseConfirmed -= OnReleaseConfirmed;
     }
 
 
     // ==== Custom ====
 
-    protected virtual void OnPressed(float time) { }
+    protected virtual void OnPressStarted(Vector2 direction) { }
 
-    protected virtual void OnReleased(float time, Vector2 direction) { }
+    protected virtual void OnPressConfirmed(Vector2 direction) { }
+
+    protected virtual void OnReleasStarted(Vector2 direction) { }
+
+    protected virtual void OnReleaseConfirmed(Vector2 direction) { }
 
 }

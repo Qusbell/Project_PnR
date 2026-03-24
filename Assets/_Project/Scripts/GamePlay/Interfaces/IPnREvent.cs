@@ -6,6 +6,8 @@ using UnityEngine;
 /// </summary>
 public interface IPnREvent
 {
-    public event Action<float> OnPressed;
-    public event Action<float, Vector2> OnReleased;
+    public event Action<Vector2> OnPressStarted;
+    public event Action<Vector2> OnPressConfirmed;
+    public event Action<Vector2> OnReleaseStarted;
+    public event Action<Vector2> OnReleaseConfirmed;
 }
