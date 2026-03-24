@@ -7,4 +7,6 @@
 public interface ICompass
 {
     Vector2 Direction { get; }
+
+    bool IsActivate { get; }
 }

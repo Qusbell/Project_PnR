@@ -9,7 +9,7 @@ public class TopDownCamera : MonoBehaviour, ITraveler
 
     private IDestination Destination { get; set; }
 
-    private Vector3 _currentVelocity;
+    private Vector3 CurrentVelocity { get; set; }
 
 
     // ==== Life Cycle ==== //
@@ -30,16 +30,19 @@ public class TopDownCamera : MonoBehaviour, ITraveler
         if (Destination == null || !Destination.IsActivated) { return; }
 
         Vector3 targetPosition = new Vector3(Destination.Position.x, Destination.Position.y) + Config.Offset;
+        Vector3 currentVelocity = CurrentVelocity;
 
         // 2D 환경에서도 카메라는 -10 정도 유지되어야 함
         // 사실 내부적으로는 3D를 쓰나?
         transform.position = Vector3.SmoothDamp(
             transform.position,
             targetPosition,
-            ref _currentVelocity,
+            ref currentVelocity,
             Config.SmoothTime,
             Config.MaxSpeed
         );
+
+        CurrentVelocity = currentVelocity;
     }
 
     public void MoveTo(IDestination destination)

@@ -5,7 +5,7 @@
 /// </summary>
 public class Mover_Test : MonoBehaviour, IDriver
 {
-    // ==== Component ====
+    // ==== Component ==== //
 
     private Rigidbody2D _rigid;
     private Rigidbody2D Rigid
@@ -17,17 +17,17 @@ public class Mover_Test : MonoBehaviour, IDriver
                 if (!TryGetComponent<Rigidbody2D>(out _rigid))
                 { _rigid = gameObject.AddComponent<Rigidbody2D>(); }
 
+                // 물리값 조절
                 _rigid.gravityScale = 0;
                 _rigid.constraints = RigidbodyConstraints2D.FreezeRotation;
             }
-
 
             return _rigid;
         }
     }
 
 
-    // ==== Field ====
+    // ==== Field ==== //
 
     /// <summary>
     /// <-- 스크립터블이든 NetVariable이든 뭐든 나중에 따로 빼둬야 할듯?
@@ -36,23 +36,16 @@ public class Mover_Test : MonoBehaviour, IDriver
     public float MoveSpeed { get; private set; } = 5f;
 
 
-    // ==== Custom ====
+    // ==== Custom ==== //
 
     /// <summary>
     /// 입력된 방향으로 오브젝트를 이동시킴 <br/>
     /// direction은 normalized되어 있다고 가정
     /// </summary>
-    public void MoveAt(Vector2 direction)
+    public void MoveAt(ICompass compass)
     {
-        if (direction.sqrMagnitude < 0.01f)
-        {
-            Rigid.linearVelocity = Vector2.zero;
-        }
-        else
-        {
-            Rigid.linearVelocity = direction * MoveSpeed;
-        }
+        if (compass == null) { Rigid.linearVelocity = Vector2.zero; return; }
+        Rigid.linearVelocity = compass.IsActivate ? compass.Direction * MoveSpeed : Vector2.zero;
     }
-
 
 }

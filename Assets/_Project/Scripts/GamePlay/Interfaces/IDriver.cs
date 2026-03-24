@@ -6,5 +6,5 @@
 /// </summary>
 public interface IDriver
 {
-    void MoveAt(Vector2 direction);
+    void MoveAt(ICompass compass);
 }

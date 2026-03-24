@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
@@ -14,12 +12,20 @@ using UnityEngine.InputSystem.Controls;
 /// - ← → 동시 입력 중 Release 되는 현상 제거 <br/>
 /// - ←입력 중 →입력 시 아주 잠시 Release되는 현상 제거
 /// </summary>
+[RequireComponent(typeof(INetActivator))]
 public class InputHandler : MonoBehaviour, IPnREvent, ICompass, INetAware
 {
-    // ==== Field ====
+    // ==== Component ==== //
+
+    private INetActivator _initilaizer;
+    private INetActivator NetInit => _initilaizer ??= GetComponentInParent<INetActivator>();
+
+
+    // ==== Field ==== //
 
     private InputSystem_Actions _inputActions;
     private InputSystem_Actions InputActions => _inputActions ??= new();
+
     
     /// <summary>
     /// 인스펙터 할당 필수
@@ -35,6 +41,14 @@ public class InputHandler : MonoBehaviour, IPnREvent, ICompass, INetAware
 
     // 입력 방향
     public Vector2 Direction { get; private set; }
+
+    public bool IsActivate
+    {
+        get
+        {
+            return Direction.sqrMagnitude > 0.01f;
+        }
+    }
 
 
 
@@ -72,8 +86,23 @@ public class InputHandler : MonoBehaviour, IPnREvent, ICompass, INetAware
     /// <summary>
     /// IsPhysicallyPressed에서 사용할 버튼들 전수조사 저장용 List
     /// </summary>
-    private List<ButtonControl> _moveButtons;
-    private List<ButtonControl> MoveButtons => _moveButtons ??= new();
+    private List<ButtonControl> _moveButtons = new();
+    private List<ButtonControl> MoveButtons
+    {
+        get
+        {
+            if (_moveButtons.Count == 0)
+            {
+                foreach (var control in InputActions.Player.Move.controls)
+                {
+                    if (control is UnityEngine.InputSystem.Controls.ButtonControl button)
+                    { _moveButtons.Add(button); }
+                }
+            }
+
+            return _moveButtons;
+        }
+    }
 
     /// <summary>
     /// 키보드에서 ← + → 입력 시 Released 나가는 거 때문에(Vector2.zero를 무조건 canceled로 판정해버림)<br/>
@@ -92,6 +121,7 @@ public class InputHandler : MonoBehaviour, IPnREvent, ICompass, INetAware
         }
     }
 
+
     // ---- 실수 Release 억제 ----
 
     /// <summary>
@@ -106,37 +136,17 @@ public class InputHandler : MonoBehaviour, IPnREvent, ICompass, INetAware
     private bool IsReleasePending { get; set; } = false;
 
 
-    // ==== Life Cycle ====
+    // ==== Life Cycle ==== //
 
-    // <-- Initialize랑 순서가 잘못될 수 있음
-    // 이후 Initialize에서 초기화 검토
-    // (Disable도 마찬가지)
     private void OnEnable()
     {
-        InputActions.Player.Enable();
-        InputActions.Player.Move.started += StartPressed;
-        InputActions.Player.Move.canceled += EndReleased;
-
-        // 버튼 초기화
-        foreach (var control in InputActions.Player.Move.controls)
-        {
-            if (control is UnityEngine.InputSystem.Controls.ButtonControl button)
-            {
-                MoveButtons.Add(button);
-            }
-        }
+        NetInit.TryActivate(this);
     }
-
 
     private void OnDisable()
     {
-        InputActions.Player.Move.started -= StartPressed;
-        InputActions.Player.Move.canceled -= EndReleased;
-        InputActions.Player.Disable();
-
-        MoveButtons.Clear();
+        NetInit.TryDeactivate(this);
     }
-
 
     private void Update()
     {
@@ -150,16 +160,35 @@ public class InputHandler : MonoBehaviour, IPnREvent, ICompass, INetAware
         }
     }
 
-
-    // ==== Custom ====
-
-    public void Initialize(INetAuthority authority)
+    private void OnDestroy()
     {
-        if (!authority.IsOwner)
-        {
-            enabled = false;
-        }
+        _inputActions?.Dispose();
     }
+
+
+    // ==== Interface ==== //
+
+    public void ActivateAt(INetAuthority authority)
+    {
+        if (!authority.IsOwner) { return; }
+
+        InputActions.Player.Enable();
+        InputActions.Player.Move.started += StartPressed;
+        InputActions.Player.Move.canceled += EndReleased;
+    }
+
+    public void DeactivateAt(INetAuthority authority)
+    {
+        if (!authority.IsOwner) { return; }
+
+        InputActions.Player.Move.started -= StartPressed;
+        InputActions.Player.Move.canceled -= EndReleased;
+        InputActions.Player.Disable();
+        MoveButtons.Clear();
+    }
+
+
+    // ==== Custom ==== //
 
     private void StartPressed(InputAction.CallbackContext context)
     {
@@ -228,7 +257,7 @@ public class InputHandler : MonoBehaviour, IPnREvent, ICompass, INetAware
 
 
 
-    // ==== Debug ====
+    // ==== Debug ==== //
 
     private void OnValidate()
     {

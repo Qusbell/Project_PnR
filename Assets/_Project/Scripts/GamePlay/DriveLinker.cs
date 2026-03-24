@@ -21,6 +21,6 @@ public class DriveLinker : MonoBehaviour
 
     private void Update()
     {
-        Driver.MoveAt(Compass.Direction);
+        Driver.MoveAt(Compass);
     }
 }

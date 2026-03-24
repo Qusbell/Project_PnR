@@ -109,6 +109,7 @@ GameObject:
   - component: {fileID: 5203593423511562816}
   - component: {fileID: 5953345108417790602}
   - component: {fileID: -7366171311504014956}
+  - component: {fileID: 798763008901858572}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -291,7 +292,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4381745dca7079a48bc628b23caccd5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InputHandler
-  ShowTopMostFoldoutHeaderGroup: 1
   <InputConfig>k__BackingField: {fileID: 11400000, guid: b0d5d3632d0127b469e198180afb3a2b, type: 2}
 --- !u!114 &5203593423511562816
 MonoBehaviour:
@@ -329,3 +329,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 105f29ecc4936ea4daaa1101b4496438, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraTarget
+--- !u!114 &798763008901858572
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8282932059691489664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ca5f3d54af96184993b589d3feed2a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NetContext_Test2
+  ShowTopMostFoldoutHeaderGroup: 1
