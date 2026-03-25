@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Unity.Netcode;
 
 public class NetContext_Test2 : NetworkBehaviour, INetAuthority, INetActivator
@@ -33,12 +33,7 @@ public class NetContext_Test2 : NetworkBehaviour, INetAuthority, INetActivator
     {
         // 예약 리스트에서 제거 (스폰 전 비활성화 요청 대비)
         OnActivateReserved -= target.ActivateAt;
-
-        // 스폰된 상태면 제거 (스폰 상태조차 아니면 별 의미 없음)
-        if (IsSpawned)
-        {
-            target.DeactivateAt(this);
-        }
+        target.DeactivateAt(this);
     }
 
 

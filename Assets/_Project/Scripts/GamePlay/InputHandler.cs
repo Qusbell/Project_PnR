@@ -81,45 +81,11 @@ public class InputHandler : MonoBehaviour, IPnREvent, ICompass, INetAware
     /// <-- alt + tab 사용 등으로 창을 나갈 경우, canceled 이벤트가 들어오지 않아 굳을 수 있음 <br/>
     /// 이 예외처리가 당장 필요하진 않겠지만, 이에 대해서 인지해둘 것
     /// </summary>
-    private bool IsPressStarted { get; set; } = false;
+    private IFlag _pressFlag;
+    private IFlag PFlag => _pressFlag ??= new BaseFlag();
 
-    /// <summary>
-    /// IsPhysicallyPressed에서 사용할 버튼들 전수조사 저장용 List
-    /// </summary>
-    private List<ButtonControl> _moveButtons = new();
-    private List<ButtonControl> MoveButtons
-    {
-        get
-        {
-            if (_moveButtons.Count == 0)
-            {
-                foreach (var control in InputActions.Player.Move.controls)
-                {
-                    if (control is UnityEngine.InputSystem.Controls.ButtonControl button)
-                    { _moveButtons.Add(button); }
-                }
-            }
-
-            return _moveButtons;
-        }
-    }
-
-    /// <summary>
-    /// 키보드에서 ← + → 입력 시 Released 나가는 거 때문에(Vector2.zero를 무조건 canceled로 판정해버림)<br/>
-    /// 하다하다 안 돼서 그냥 물리적인 키 입력 자체를 전수조사하는 방법을 채택
-    /// </summary>
-    private bool IsPhysicallyPressed
-    {
-        get
-        {
-            // MoveAt 액션에 바인딩된 모든 컨트롤(키) 중 하나라도 눌려있는지 확인
-            foreach (var button in MoveButtons)
-            {
-                if (button.isPressed) { return true; }
-            }
-            return false;
-        }
-    }
+    private ButtonInputValidator _buttonInput;
+    private ButtonInputValidator ButtonInput => _buttonInput ??= new(InputActions.Player.Move.controls);
 
 
     // ---- 실수 Release 억제 ----
@@ -134,6 +100,9 @@ public class InputHandler : MonoBehaviour, IPnREvent, ICompass, INetAware
     /// Release가 Confirm 받고 있는 동안 true
     /// </summary>
     private bool IsReleasePending { get; set; } = false;
+
+    private IFlag _pendingFlag;
+    private IFlag ReleasePending => _pendingFlag ??= new BaseFlag();
 
 
     // ==== Life Cycle ==== //
@@ -184,7 +153,6 @@ public class InputHandler : MonoBehaviour, IPnREvent, ICompass, INetAware
         InputActions.Player.Move.started -= StartPressed;
         InputActions.Player.Move.canceled -= EndReleased;
         InputActions.Player.Disable();
-        MoveButtons.Clear();
     }
 
 
@@ -192,14 +160,14 @@ public class InputHandler : MonoBehaviour, IPnREvent, ICompass, INetAware
 
     private void StartPressed(InputAction.CallbackContext context)
     {
-        if(IsPressStarted) { return; }
-        IsPressStarted = true;
+        if (!PFlag.TryEnter()) { return; }
 
         var direction = InputActions.Player.Move.ReadValue<Vector2>();
 
         ReleaseConfirmID++;
 
-        if(!IsReleasePending)
+        //if(!IsReleasePending)
+        if(!ReleasePending.IsFlagOn)
         {
             OnPressStarted?.Invoke(direction);
             _ = ConfirmPress();
@@ -219,8 +187,8 @@ public class InputHandler : MonoBehaviour, IPnREvent, ICompass, INetAware
 
     private void EndReleased(InputAction.CallbackContext context)
     {
-        if(IsPhysicallyPressed) { return; } // <-- 이거 키보드에서만 먹힐 거 같은데? 나중에 체크해봐야겠다
-        IsPressStarted = false;
+        if (ButtonInput.IsPhysicallyPressed) { return; }
+        PFlag.Exit();
 
         // 1. Delay 이전에 Intent 저장 (시간 경과로 인한 Intent 휘발 방지)
         var direction = IntentInput;
@@ -236,7 +204,9 @@ public class InputHandler : MonoBehaviour, IPnREvent, ICompass, INetAware
     private async Awaitable ConfirmRelease(int ID, Vector2 direction)
     {
         // Confirm 시작
-        IsReleasePending = true;
+        //IsReleasePending = true;
+        // Flag True만 세우기
+        ReleasePending.TryEnter();
 
         // 2. Delay 실행
         await Awaitable.WaitForSecondsAsync(InputConfig.InputDelay, destroyCancellationToken);
@@ -252,7 +222,8 @@ public class InputHandler : MonoBehaviour, IPnREvent, ICompass, INetAware
         }
 
         // 어쨌든 Confirm은 끝났음
-        IsReleasePending = false;
+        ReleasePending.Exit();
+        //IsReleasePending = false;
     }
 
 
