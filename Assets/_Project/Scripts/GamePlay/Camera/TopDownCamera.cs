@@ -46,9 +46,10 @@ public class TopDownCamera : MonoBehaviour, ITraveler
         CurrentVelocity = currentVelocity;
     }
 
-    public void MoveTo(IDestination destination)
+    public bool MoveTo(IDestination destination)
     {
         Destination = destination;
+        return true;
     }
 
     public void Stop()

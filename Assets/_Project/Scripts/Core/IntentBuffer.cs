@@ -9,9 +9,9 @@ public class IntentBuffer
     private readonly List<(Vector2 Direction, float Time)> _intents = new(64);
     private List<(Vector2 Direction, float Time)> Intents => _intents;
 
-    public float IntentMaxDelay { get; private set; }
+    private float IntentMaxDelay { get; set; }
 
-    public float DeadZone { get; private set; }
+    private float DeadZone { get; set; }
 
 
     public IntentBuffer(float delay = 0.1f, float deadZone = 0.5f)

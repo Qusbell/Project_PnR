@@ -6,8 +6,8 @@ public class CameraTarget_Test : NetMember_Test, IDestination, INetAware
 
     public bool IsActivated => enabled;
 
-    private ITraveler targetCamera;
-    private ITraveler TargetCamera => targetCamera ??= Camera.main?.GetComponent<ITraveler>();
+    private ITraveler _targetCamera;
+    private ITraveler TargetCamera => _targetCamera ??= Camera.main?.GetComponent<ITraveler>();
 
 
     protected override void OnDisable()

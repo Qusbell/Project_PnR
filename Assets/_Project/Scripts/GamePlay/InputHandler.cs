@@ -17,8 +17,8 @@ public class InputHandler : MonoBehaviour, IPnREvent, ICompass, INetAware
 {
     // ==== Component ==== //
 
-    private INetActivator _initilaizer;
-    private INetActivator NetInit => _initilaizer ??= GetComponentInParent<INetActivator>();
+    private INetActivator _initializer;
+    private INetActivator NetInit => _initializer ??= GetComponentInParent<INetActivator>();
 
 
     // ==== Field ==== //
@@ -31,7 +31,7 @@ public class InputHandler : MonoBehaviour, IPnREvent, ICompass, INetAware
     /// 인스펙터 할당 필수
     /// </summary>
     [field:SerializeField]
-    private InputConfig InputConfig { get; set; }
+    private InputConfig Config { get; set; }
 
     // 시간 + 방향 전달
     public event Action<Vector2> OnPressStarted;
@@ -59,7 +59,7 @@ public class InputHandler : MonoBehaviour, IPnREvent, ICompass, INetAware
     /// new(대각선 의도 판정 시간, 의도 갯수, 대각선 최소 크기)
     /// </summary>
     private IntentBuffer _intentBuffer;
-    private IntentBuffer Intents => _intentBuffer ??= new(InputConfig.DiagonalDelay, InputConfig.DeadZone);
+    private IntentBuffer Intents => _intentBuffer ??= new(Config.DiagonalDelay, Config.DeadZone);
 
     // 의도 방향
     private Vector2 IntentInput
@@ -176,7 +176,7 @@ public class InputHandler : MonoBehaviour, IPnREvent, ICompass, INetAware
 
     private async Awaitable ConfirmPress()
     {
-        await Awaitable.WaitForSecondsAsync(InputConfig.InputDelay, destroyCancellationToken);
+        await Awaitable.WaitForSecondsAsync(Config.InputDelay, destroyCancellationToken);
 
         if (this.enabled)
         {
@@ -209,7 +209,7 @@ public class InputHandler : MonoBehaviour, IPnREvent, ICompass, INetAware
         ReleasePending.TryEnter();
 
         // 2. Delay 실행
-        await Awaitable.WaitForSecondsAsync(InputConfig.InputDelay, destroyCancellationToken);
+        await Awaitable.WaitForSecondsAsync(Config.InputDelay, destroyCancellationToken);
 
         // 3. Delay 이후에도 Press가 없었다면,
         // 그제서야 Release로 간주
@@ -232,7 +232,7 @@ public class InputHandler : MonoBehaviour, IPnREvent, ICompass, INetAware
 
     private void OnValidate()
     {
-        if (InputConfig == null)
+        if (Config == null)
         {
             Debug.LogError($"{name} : InputConfig = null");
         }

@@ -292,7 +292,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4381745dca7079a48bc628b23caccd5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InputHandler
-  <InputConfig>k__BackingField: {fileID: 11400000, guid: b0d5d3632d0127b469e198180afb3a2b, type: 2}
+  <Config>k__BackingField: {fileID: 11400000, guid: b0d5d3632d0127b469e198180afb3a2b, type: 2}
 --- !u!114 &5203593423511562816
 MonoBehaviour:
   m_ObjectHideFlags: 0

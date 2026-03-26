@@ -7,7 +7,12 @@ using UnityEngine;
 /// </summary>
 public interface ITraveler
 {
-    void MoveTo(IDestination destination);
+    /// <summary>
+    /// 목적지 지정
+    /// </summary>
+    /// <param name="destination"></param>
+    /// <returns>true : 갈 수 있음, false : 갈 수 없음</returns>
+    bool MoveTo(IDestination destination);
 
     void Stop();
 }
