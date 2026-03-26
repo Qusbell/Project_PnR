@@ -5,7 +5,7 @@ public class CameraTarget_Test : NetMember_Test, IDestination, INetAware
     public Vector2 Position => transform.position;
 
     public bool IsActivated => enabled;
-
+        
     private ITraveler _targetCamera;
     private ITraveler TargetCamera => _targetCamera ??= Camera.main?.GetComponent<ITraveler>();
 
