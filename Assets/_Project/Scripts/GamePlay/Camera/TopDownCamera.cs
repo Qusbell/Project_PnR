@@ -27,7 +27,8 @@ public class TopDownCamera : MonoBehaviour, ITraveler
     /// </summary>
     private void UpdateCameraPosition()
     {
-        if (Destination == null || !Destination.IsActivated) { return; }
+        if (Destination == null) { return; }
+        if (!Destination.IsActivated) { return; }
 
         Vector3 targetPosition = new Vector3(Destination.Position.x, Destination.Position.y) + Config.Offset;
         Vector3 currentVelocity = CurrentVelocity;
@@ -45,9 +46,10 @@ public class TopDownCamera : MonoBehaviour, ITraveler
         CurrentVelocity = currentVelocity;
     }
 
-    public void MoveTo(IDestination destination)
+    public bool MoveTo(IDestination destination)
     {
         Destination = destination;
+        return true;
     }
 
     public void Stop()

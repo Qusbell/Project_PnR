@@ -10,8 +10,8 @@ public class CameraTarget_Test : MonoBehaviour, IDestination, INetAware
 
     public bool IsActivated => enabled;
 
-    private ITraveler targetCamera;
-    private ITraveler TargetCamera => targetCamera ??= Camera.main?.GetComponent<ITraveler>();
+    private ITraveler _targetCamera;
+    private ITraveler TargetCamera => _targetCamera ??= Camera.main?.GetComponent<ITraveler>();
 
 
     private void OnEnable()
