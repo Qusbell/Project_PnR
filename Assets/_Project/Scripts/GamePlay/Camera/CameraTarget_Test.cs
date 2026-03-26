@@ -1,11 +1,7 @@
 ﻿using UnityEngine;
 
-public class CameraTarget_Test : MonoBehaviour, IDestination, INetAware
+public class CameraTarget_Test : NetMember_Test, IDestination, INetAware
 {
-    private INetActivator _initilaizer;
-    private INetActivator NetInit => _initilaizer ??= GetComponentInParent<INetActivator>();
-
-
     public Vector2 Position => transform.position;
 
     public bool IsActivated => enabled;
@@ -14,23 +10,18 @@ public class CameraTarget_Test : MonoBehaviour, IDestination, INetAware
     private ITraveler TargetCamera => _targetCamera ??= Camera.main?.GetComponent<ITraveler>();
 
 
-    private void OnEnable()
+    protected override void OnDisable()
     {
-        NetInit?.TryActivate(this);
+        base.OnDisable();
     }
 
-    private void OnDisable()
-    {
-        NetInit?.TryDeactivate(this);
-    }
-
-    public void ActivateAt(INetAuthority authority)
+    public override void ActivateAt(INetAuthority authority)
     {
         if (!authority.IsOwner) { enabled = false; return; }
         TargetCamera?.MoveTo(this);
     }
 
-    public void DeactivateAt(INetAuthority authority)
+    public override void DeactivateAt(INetAuthority authority)
     {
         if (!authority.IsOwner) { return; }
         TargetCamera?.Stop();
