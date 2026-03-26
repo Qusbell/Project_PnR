@@ -13,15 +13,9 @@ using UnityEngine.InputSystem.Controls;
 /// - ←입력 중 →입력 시 아주 잠시 Release되는 현상 제거
 /// </summary>
 [RequireComponent(typeof(INetActivator))]
-public class InputHandler : MonoBehaviour, IPnREvent, ICompass, INetAware
+public class InputHandler : NetMember_Test, IPnREvent, ICompass, INetAware
 {
-    // ==== Component ==== //
-
-    private INetActivator _initializer;
-    private INetActivator NetInit => _initializer ??= GetComponentInParent<INetActivator>();
-
-
-    // ==== Field ==== //
+    // === Field === //
 
     private InputSystem_Actions _inputActions;
     private InputSystem_Actions InputActions => _inputActions ??= new();
@@ -52,7 +46,7 @@ public class InputHandler : MonoBehaviour, IPnREvent, ICompass, INetAware
 
 
 
-    // ---- 대각선 의도 ----
+    // --- 대각선 의도 --- //
 
     /// <summary>
     /// 대각선 의도 <br/>
@@ -73,7 +67,7 @@ public class InputHandler : MonoBehaviour, IPnREvent, ICompass, INetAware
     }
 
 
-    // ---- 동시 입력 Release 억제 ----
+    // --- 동시 입력 Release 억제 --- //
 
     /// <summary>
     /// 이미 누르고 있는 상태인지 체크 Flag <br/>
@@ -82,13 +76,13 @@ public class InputHandler : MonoBehaviour, IPnREvent, ICompass, INetAware
     /// 이 예외처리가 당장 필요하진 않겠지만, 이에 대해서 인지해둘 것
     /// </summary>
     private IFlag _pressFlag;
-    private IFlag PFlag => _pressFlag ??= new BaseFlag();
+    private IFlag PressFlag => _pressFlag ??= new BaseFlag();
 
     private ButtonInputValidator _buttonInput;
     private ButtonInputValidator ButtonInput => _buttonInput ??= new(InputActions.Player.Move.controls);
 
 
-    // ---- 실수 Release 억제 ----
+    // --- 실수 Release 억제 --- //
 
     /// <summary>
     /// 매 Pressed마다 ++
@@ -96,26 +90,11 @@ public class InputHandler : MonoBehaviour, IPnREvent, ICompass, INetAware
     /// </summary>
     private int ReleaseConfirmID { get; set; } = 0;
 
-    /// <summary>
-    /// Release가 Confirm 받고 있는 동안 true
-    /// </summary>
-    private bool IsReleasePending { get; set; } = false;
-
     private IFlag _pendingFlag;
     private IFlag ReleasePending => _pendingFlag ??= new BaseFlag();
 
 
-    // ==== Life Cycle ==== //
-
-    private void OnEnable()
-    {
-        NetInit.TryActivate(this);
-    }
-
-    private void OnDisable()
-    {
-        NetInit.TryDeactivate(this);
-    }
+    // === Life Cycle === //
 
     private void Update()
     {
@@ -135,9 +114,9 @@ public class InputHandler : MonoBehaviour, IPnREvent, ICompass, INetAware
     }
 
 
-    // ==== Interface ==== //
+    // === Interface === //
 
-    public void ActivateAt(INetAuthority authority)
+    public override void ActivateAt(INetAuthority authority)
     {
         if (!authority.IsOwner) { return; }
 
@@ -146,7 +125,7 @@ public class InputHandler : MonoBehaviour, IPnREvent, ICompass, INetAware
         InputActions.Player.Move.canceled += EndReleased;
     }
 
-    public void DeactivateAt(INetAuthority authority)
+    public override void DeactivateAt(INetAuthority authority)
     {
         if (!authority.IsOwner) { return; }
 
@@ -156,18 +135,19 @@ public class InputHandler : MonoBehaviour, IPnREvent, ICompass, INetAware
     }
 
 
-    // ==== Custom ==== //
+    // === Custom === //
 
     private void StartPressed(InputAction.CallbackContext context)
     {
-        if (!PFlag.TryEnter()) { return; }
+        if (!PressFlag.TryEnter()) { return; }
 
         var direction = InputActions.Player.Move.ReadValue<Vector2>();
 
         ReleaseConfirmID++;
 
-        //if(!IsReleasePending)
-        if(!ReleasePending.IsFlagOn)
+        // Release Confirm 중이 아닐 때에만
+        // Press Confirm 허용
+        if(!ReleasePending.IsBlocked)
         {
             OnPressStarted?.Invoke(direction);
             _ = ConfirmPress();
@@ -188,7 +168,7 @@ public class InputHandler : MonoBehaviour, IPnREvent, ICompass, INetAware
     private void EndReleased(InputAction.CallbackContext context)
     {
         if (ButtonInput.IsPhysicallyPressed) { return; }
-        PFlag.Exit();
+        PressFlag.Exit();
 
         // 1. Delay 이전에 Intent 저장 (시간 경과로 인한 Intent 휘발 방지)
         var direction = IntentInput;
@@ -203,32 +183,34 @@ public class InputHandler : MonoBehaviour, IPnREvent, ICompass, INetAware
     /// </summary>
     private async Awaitable ConfirmRelease(int ID, Vector2 direction)
     {
-        // Confirm 시작
-        //IsReleasePending = true;
-        // Flag True만 세우기
-        ReleasePending.TryEnter();
+        ReleasePending.Enter();
 
-        // 2. Delay 실행
-        await Awaitable.WaitForSecondsAsync(Config.InputDelay, destroyCancellationToken);
-
-        // 3. Delay 이후에도 Press가 없었다면,
-        // 그제서야 Release로 간주
-        if (ID == ReleaseConfirmID && this.enabled)
+        try
         {
-            // <-- Release 직후 esc 등을 눌러서 pause 상태가 된 경우,
-            // 잘못된 Release가 발생할 수 있을 것 같음
-            // 그런 상황이 없다면 다행이지만 있다면 이 부분 확인
-            OnReleaseConfirmed?.Invoke(direction);
-        }
+            // 2. Delay 실행
+            await Awaitable.WaitForSecondsAsync(Config.InputDelay, destroyCancellationToken);
 
-        // 어쨌든 Confirm은 끝났음
-        ReleasePending.Exit();
-        //IsReleasePending = false;
+            // 3. Delay 이후에도 Press가 없었다면,
+            // 그제서야 Release로 간주
+            if (ID == ReleaseConfirmID && this.enabled)
+            {
+                // <-- Release 직후 esc 등을 눌러서 pause 상태가 된 경우,
+                // 잘못된 Release가 발생할 수 있을 것 같음
+                // 그런 상황이 없다면 다행이지만 있다면 이 부분 확인
+                OnReleaseConfirmed?.Invoke(direction);
+            }
+        }
+        finally
+        {
+            // 비동기 작업이 취소되거나 오류가 나도 반드시 Flag를 해제함
+            // 어쨌든 Confirm은 끝났음
+            ReleasePending.Exit();
+        }
     }
 
 
 
-    // ==== Debug ==== //
+    // === Debug === //
 
     private void OnValidate()
     {

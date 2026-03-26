@@ -2,16 +2,21 @@
 
 public class BaseFlag : IFlag
 {
-    public bool IsFlagOn { get; private set; }
+    public bool IsBlocked { get; private set; }
 
     public bool TryEnter()
     {
-        if (IsFlagOn) { return false; }
-        return IsFlagOn = true;
+        if (IsBlocked) { return false; }
+        return IsBlocked = true;
+    }
+
+    public void Enter()
+    {
+        IsBlocked = true;
     }
 
     public void Exit()
     {
-        IsFlagOn = false;
+        IsBlocked = false;
     }
 }
