@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class CameraTarget_Test : NetMember_Test, IDestination, INetAware
+public class CameraTarget_Test : NetAwareBehavior, IDestination, INetAware
 {
     public Vector2 Position => transform.position;
 
@@ -9,11 +9,6 @@ public class CameraTarget_Test : NetMember_Test, IDestination, INetAware
     private ITraveler _targetCamera;
     private ITraveler TargetCamera => _targetCamera ??= Camera.main?.GetComponent<ITraveler>();
 
-
-    protected override void OnDisable()
-    {
-        base.OnDisable();
-    }
 
     public override void ActivateAt(INetAuthority authority)
     {

@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Controls;
 
 /// <summary>
 /// 입력값을 제어하고 <br/>
@@ -13,7 +11,7 @@ using UnityEngine.InputSystem.Controls;
 /// - ←입력 중 →입력 시 아주 잠시 Release되는 현상 제거
 /// </summary>
 [RequireComponent(typeof(INetActivator))]
-public class InputHandler : NetMember_Test, IPnREvent, ICompass, INetAware
+public class InputHandler : NetAwareBehavior, IPnREvent, ICompass, INetAware
 {
     // === Field === //
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using Unity.Netcode;
 
-public class NetContext_Test2 : NetworkBehaviour, INetAuthority, INetActivator
+public class NetLifeCycleProxy : NetworkBehaviour, INetAuthority, INetActivator
 {
     private event Action<INetAuthority> OnActivateReserved;
 

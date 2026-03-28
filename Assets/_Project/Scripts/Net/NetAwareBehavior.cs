@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 [RequireComponent(typeof(INetAuthority), typeof(INetActivator))]
-public abstract class NetMember_Test : MonoBehaviour, INetAware
+public abstract class NetAwareBehavior : MonoBehaviour, INetAware
 {
     private INetActivator _netActivator;
     protected INetActivator NetActivator => _netActivator ??= GetComponent<INetActivator>();
