@@ -44,7 +44,12 @@ public class Mover_Test : MonoBehaviour, IDriver
     /// </summary>
     public void MoveAt(ICompass compass)
     {
-        if (compass == null) { Rigid.linearVelocity = Vector2.zero; return; }
+        if (compass == null)
+        {
+            Rigid.linearVelocity = Vector2.zero;
+            return;
+        }
+
         Rigid.linearVelocity = compass.IsActivate ? compass.Direction * MoveSpeed : Vector2.zero;
     }
 

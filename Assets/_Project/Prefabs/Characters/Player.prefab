@@ -107,9 +107,9 @@ GameObject:
   - component: {fileID: -5224586294750965240}
   - component: {fileID: -478808871732583396}
   - component: {fileID: 5203593423511562816}
-  - component: {fileID: 5953345108417790602}
   - component: {fileID: -7366171311504014956}
   - component: {fileID: 798763008901858572}
+  - component: {fileID: -8624757099731108049}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -305,18 +305,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da8b3a0a4ba9dee4dbca3d7bc4ecb08e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MovementLinker
---- !u!114 &5953345108417790602
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8282932059691489664}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 49553e4d06ebfc44ab1097d3a3fc52a0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BasicAttack
 --- !u!114 &-7366171311504014956
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -342,3 +330,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetContext_Test2
   ShowTopMostFoldoutHeaderGroup: 1
+--- !u!114 &-8624757099731108049
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8282932059691489664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0865f82010dbf09468a4ce46c3ddbafc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EntityContext
+  _type: {fileID: 11400000, guid: b863a83793f2d28489c04b52dc426e3b, type: 2}
+  _faction: {fileID: 11400000, guid: 4165a813a971cb84999f3a8157756a90, type: 2}

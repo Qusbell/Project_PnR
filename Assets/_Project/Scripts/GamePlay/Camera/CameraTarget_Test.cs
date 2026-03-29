@@ -10,13 +10,13 @@ public class CameraTarget_Test : NetAwareBehavior, IDestination, INetAware
     private ITraveler TargetCamera => _targetCamera ??= Camera.main?.GetComponent<ITraveler>();
 
 
-    public override void ActivateAt(INetAuthority authority)
+    public override void ActivateAt(INetContext authority)
     {
         if (!authority.IsOwner) { enabled = false; return; }
         TargetCamera?.MoveTo(this);
     }
 
-    public override void DeactivateAt(INetAuthority authority)
+    public override void DeactivateAt(INetContext authority)
     {
         if (!authority.IsOwner) { return; }
         TargetCamera?.Stop();

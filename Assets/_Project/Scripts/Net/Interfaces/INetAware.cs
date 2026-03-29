@@ -6,7 +6,7 @@
 /// </summary>
 public interface INetAware
 {
-    void ActivateAt(INetAuthority authority);
+    void ActivateAt(INetContext authority);
 
-    void DeactivateAt(INetAuthority authority);
+    void DeactivateAt(INetContext authority);
 }

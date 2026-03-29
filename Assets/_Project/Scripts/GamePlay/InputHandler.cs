@@ -10,7 +10,7 @@ using UnityEngine.InputSystem;
 /// - ← → 동시 입력 중 Release 되는 현상 제거 <br/>
 /// - ←입력 중 →입력 시 아주 잠시 Release되는 현상 제거
 /// </summary>
-[RequireComponent(typeof(INetActivator))]
+[RequireComponent(typeof(INetActivateProxy))]
 public class InputHandler : NetAwareBehavior, IPnREvent, ICompass, INetAware
 {
     // === Field === //
@@ -114,7 +114,7 @@ public class InputHandler : NetAwareBehavior, IPnREvent, ICompass, INetAware
 
     // === Interface === //
 
-    public override void ActivateAt(INetAuthority authority)
+    public override void ActivateAt(INetContext authority)
     {
         if (!authority.IsOwner) { return; }
 
@@ -123,7 +123,7 @@ public class InputHandler : NetAwareBehavior, IPnREvent, ICompass, INetAware
         InputActions.Player.Move.canceled += EndReleased;
     }
 
-    public override void DeactivateAt(INetAuthority authority)
+    public override void DeactivateAt(INetContext authority)
     {
         if (!authority.IsOwner) { return; }
 

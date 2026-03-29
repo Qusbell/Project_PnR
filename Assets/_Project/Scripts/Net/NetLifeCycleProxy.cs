@@ -1,9 +1,9 @@
 ﻿using System;
 using Unity.Netcode;
 
-public class NetLifeCycleProxy : NetworkBehaviour, INetAuthority, INetActivator
+public class NetLifeCycleProxy : NetworkBehaviour, INetContext, INetActivateProxy
 {
-    private event Action<INetAuthority> OnActivateReserved;
+    private event Action<INetContext> OnActivateReserved;
 
     public override void OnNetworkSpawn()
     {
