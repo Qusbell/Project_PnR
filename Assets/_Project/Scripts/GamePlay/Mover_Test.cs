@@ -35,22 +35,39 @@ public class Mover_Test : MonoBehaviour, IDriver
     [field: SerializeField]
     public float MoveSpeed { get; private set; } = 5f;
 
+    private ICompass MyCompass { get; set; }
 
-    // ==== Custom ==== //
+    public bool IsMoving { get; private set; }
+
+
+    // ==== Method ==== //
+
+
+    private void Update()
+    {
+        Move();
+        Debug.Log($"IsMoving = {IsMoving}");
+    }
+
+    public void MoveBy(ICompass compass)
+    {
+        MyCompass = compass;
+    }
 
     /// <summary>
     /// 입력된 방향으로 오브젝트를 이동시킴 <br/>
     /// direction은 normalized되어 있다고 가정
     /// </summary>
-    public void MoveAt(ICompass compass)
+    private void Move()
     {
-        if (compass == null)
+        if (MyCompass == null)
         {
+            IsMoving = false;
             Rigid.linearVelocity = Vector2.zero;
             return;
         }
 
-        Rigid.linearVelocity = compass.IsActivate ? compass.Direction * MoveSpeed : Vector2.zero;
+        Rigid.linearVelocity = MyCompass.IsActivate ? MyCompass.Direction * MoveSpeed : Vector2.zero;
+        IsMoving = Rigid.linearVelocity.sqrMagnitude > 0.001f;
     }
-
 }

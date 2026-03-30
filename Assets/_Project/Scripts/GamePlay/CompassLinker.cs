@@ -2,11 +2,11 @@
 
 
 /// <summary>
-/// 방향성 동작을 이어줌
+/// 나침반을 다른 기능들과 연결시켜줌
 /// </summary>
 [RequireComponent (typeof(IDriver))]
 [RequireComponent(typeof(ICompass))]
-public class DriveLinker : MonoBehaviour
+public class CompassLinker : MonoBehaviour
 {
     // ==== Component ====
 
@@ -22,9 +22,10 @@ public class DriveLinker : MonoBehaviour
 
     // ==== Life Cycle ====
 
-    private void Update()
+
+    private void OnEnable()
     {
-        Driver.MoveAt(Compass);
-        Targeter.LookAt(Compass);
+        Driver?.MoveBy(Compass);
+        Targeter?.LookBy(Compass);
     }
 }

@@ -44,7 +44,7 @@ public class LockOnAction : PnRAction, ITargeter
     }
 
 
-    public void LookAt(ICompass compass)
+    public void LookBy(ICompass compass)
     {
         if (compass == null ||
             !compass.IsActivate ||

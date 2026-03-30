@@ -26,7 +26,9 @@ public class InputConfig : ScriptableObject
     [field: SerializeField]
     public float InputDelay { get; private set; } = 0.05f;
 
-
+    /// <summary>
+    /// 콘솔기기 등에서의 데드존
+    /// </summary>
     [Header("DeadZone")]
     [field: SerializeField]
     public float DeadZone { get; private set; } = 0.5f;

@@ -4,7 +4,7 @@ public interface ITargeter
 {
     ITargetable Target { get; }
 
-    void LookAt(ICompass compass);
+    void LookBy(ICompass compass);
 
     event Action<ITargetable> OnTargetChanged;
 }

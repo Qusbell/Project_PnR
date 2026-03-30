@@ -36,7 +36,7 @@ public class ButtonInputValidator
     {
         get
         {
-            // MoveAt 액션에 바인딩된 모든 컨트롤(키) 중 하나라도 눌려있는지 확인
+            // MoveBy 액션에 바인딩된 모든 컨트롤(키) 중 하나라도 눌려있는지 확인
             foreach (var button in MoveButtons)
             {
                 if (button.isPressed)
