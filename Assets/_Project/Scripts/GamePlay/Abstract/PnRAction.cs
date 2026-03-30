@@ -3,7 +3,8 @@ using UnityEngine;
 
 
 /// <summary>
-/// IPnREvent에 연결하여, Press와 Release 시의 처리를 실행
+/// IPnREvent에 연결하여, Press와 Release 시의 처리를 실행 <br/>
+/// <-- 이거 NetAware 필요할듯?
 /// </summary>
 [RequireComponent (typeof(IPnREvent))]
 public abstract class PnRAction : MonoBehaviour

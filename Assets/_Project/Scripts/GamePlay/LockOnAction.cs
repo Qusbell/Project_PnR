@@ -1,6 +1,6 @@
 ﻿using System;
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class LockOnAction : PnRAction, ITargeter
 {
@@ -20,16 +20,19 @@ public class LockOnAction : PnRAction, ITargeter
     /// </summary>
     public ITargetable Target { get; private set; }
 
+    private ICompass Compass { get; set; }
+    private Vector2 Direction => Compass != null ? Compass.Direction : Vector2.zero;
+    private bool IsActivate => Direction != Vector2.zero && Compass.IsActivate;
+
+
     // OverlapCircleAll의 결과를 저장할 배열 (GC 방지)
     private List<Collider2D> Overlaps = new(64);
     private ContactFilter2D ContactFilter;
 
     public event Action<ITargetable> OnTargetChanged;
 
-
-    private ICompass Compass { get; set; }
-    private Vector2 Direction => Compass != null ? Compass.Direction : Vector2.zero;
-    private bool IsActivate => Direction != Vector2.zero && Compass.IsActivate;
+    private IFlag _hardLock;
+    private IFlag HardLockFlag => _hardLock ??= new BaseFlag();
 
     // === Method === //
 
@@ -48,9 +51,25 @@ public class LockOnAction : PnRAction, ITargeter
     /// </summary>
     private void Update()
     {
+        if (HardLockFlag.IsBlocked) { return; }
+
+        // 소프트 락온
         TryLockOn(Direction);
+
+#if UNITY_EDITOR
+        // 현재 대상에게 Ray
+        if (Target == null) { return; }
+        var offset = Target.Position - transform.position;
+        Vector2 direction = offset.normalized;
+        float distance = offset.magnitude;
+        Debug.DrawLine(transform.position, (Vector2)transform.position + direction * distance, Color.red);
+#endif
     }
 
+    protected override void OnPressStarted(Vector2 direction)
+    {
+        HardLockFlag.Exit();
+    }
 
     /// <summary>
     /// Release 순간의 Target을 확정
@@ -58,10 +77,11 @@ public class LockOnAction : PnRAction, ITargeter
     /// <param name="direction">Key를 떼는 순간의 대각선 Intent를 반영한 direction</param>
     protected override void OnReleasStarted(Vector2 direction)
     {
+        // 하드 락온 (타겟 확정)
+        HardLockFlag.Enter();
         TryLockOn(direction);
 
 #if UNITY_EDITOR
-        // 디버깅
         Position_Debug = transform.position;
         Direction_Debug = direction;
         GizmoEndTime_Debug = Time.time + GizmoDuration_Debug;
@@ -100,11 +120,11 @@ public class LockOnAction : PnRAction, ITargeter
         int count = Physics2D.OverlapCircle(transform.position, Range, ContactFilter, Overlaps);
 
         ITargetable closestTarget = null;
-        float sqrMinDistance = float.MaxValue;
-        float checkAngle = Angle * 0.5f;
+        float sqrMinDistance = float.MaxValue; // 가장 가까운 거리
+        float checkAngle = Angle * 0.5f;       // 
         LayerMask combinedMask = TargetLayer | ObstacleLayer;
 
-
+        // 감지한 모든 entity 순회
         for (int i = 0; i < count; i++)
         {
             var entity = Overlaps[i];
@@ -116,7 +136,7 @@ public class LockOnAction : PnRAction, ITargeter
                 if (!target.IsTargetable || entity.gameObject == gameObject) { continue; }
 
                 // <-- (차후) target.Context.Faction 체크하고
-                // 같은지 다른지 등 체크 (또 다른 옵션 따라서?)
+                // 같은지 다른지 등 체크 (또 다른 Config나 Context에서 가져오기?)
 
                 // 4. 가장 가까운 타겟인지 체크
                 Vector2 offset = entity.transform.position - transform.position;
@@ -132,16 +152,6 @@ public class LockOnAction : PnRAction, ITargeter
                 // 6. Raycast로 장애물 체크
                 float DistanceToTarget = Mathf.Sqrt(sqrDistanceToTarget);
                 RaycastHit2D hit = Physics2D.Raycast(transform.position, dirToTarget, DistanceToTarget, combinedMask);
-
-#if UNITY_EDITOR
-                Color rayColor = Color.green; // 기본은 녹색 (통과)
-                if (hit.collider != null && hit.collider != entity)
-                {
-                    rayColor = Color.red; // 장애물에 걸리면 빨간색
-                }
-                // Scene 뷰에서만 보이며, 0.1초 동안 유지됨
-                Debug.DrawLine(transform.position, (Vector2)transform.position + dirToTarget * DistanceToTarget, rayColor, 0.1f);
-#endif
 
                 // 뭔가를 맞췄는데 && 그 맞춘 게 검사 중인 entity가 아니라면
                 if (hit.collider != null && hit.collider != entity) { continue; }
@@ -163,7 +173,7 @@ public class LockOnAction : PnRAction, ITargeter
     private Vector2 Direction_Debug { get; set; }
     private Vector2 Position_Debug { get; set; }
     private float GizmoEndTime_Debug { get; set; } = -1f; // 기즈모 표시가 끝날 시간
-    private float GizmoDuration_Debug { get; set; } = 0.4f; // 유지 시간 (1초)
+    private float GizmoDuration_Debug { get; set; } = 0.4f; // 유지 시간
 
     private void OnValidate()
     {
@@ -175,16 +185,25 @@ public class LockOnAction : PnRAction, ITargeter
 
     private void OnDrawGizmos()
     {
+        // 소프트 락온
         if (GizmoEndTime_Debug < Time.time)
         {
             Gizmos.color = Color.white;
             DrawArcGizmo(transform.position, Direction, Range, Angle);
         }
+        // 하드 락온
         else
         {
             Gizmos.color = Color.yellow; // 가독성을 위해 색상 추가
             DrawArcGizmo(Position_Debug, Direction_Debug, Range, Angle);
+            if (Target != null) { DrawTargetGizmo(Target.Position, 1f); }
         }
+    }
+
+    private void DrawTargetGizmo(Vector3 center, float radius)
+    {
+        center.z = 0f;
+        Gizmos.DrawWireSphere(center, radius);
     }
 
     private void DrawArcGizmo(Vector3 center, Vector2 direction, float radius, float totalAngle)
