@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3eea2f325ecf6e144a39204bd2c1ce61, type: 3}
   m_Name: PlayerInputConfig
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInputConfig
-  <DiagonalDelay>k__BackingField: 0.08
-  <ReleaseDelay>k__BackingField: 0.08
+  <DiagonalDelay>k__BackingField: 0.1
+  <InputDelay>k__BackingField: 0.05
   <DeadZone>k__BackingField: 0.5

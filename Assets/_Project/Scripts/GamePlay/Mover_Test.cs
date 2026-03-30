@@ -46,7 +46,6 @@ public class Mover_Test : MonoBehaviour, IDriver
     private void Update()
     {
         Move();
-        Debug.Log($"IsMoving = {IsMoving}");
     }
 
     public void MoveBy(ICompass compass)
