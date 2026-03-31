@@ -17,7 +17,6 @@ public class RawInputCompass : NetAwareBehavior, IRawDirectionalInput
 
     public bool IsActivate => enabled && Direction.sqrMagnitude > 0.01f;
 
-
     public event Action OnPressed;
     public event Action OnReleased;
 

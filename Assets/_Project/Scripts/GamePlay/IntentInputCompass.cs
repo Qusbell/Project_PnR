@@ -77,8 +77,14 @@ public class IntentInputCompass : MonoBehaviour, IIntentDirectionalInput
     private void OnEnable()
     {
         RawInput ??= GetComponent<IRawDirectionalInput>();
-        if (RawInput == null) { enabled = false; return; }
+        if (RawInput == null)
+        {
+            enabled = false;
+            return;
+        }
 
+
+        // Enable시에만 추가
         RawInput.OnPressed -= PressStart;
         RawInput.OnPressed += PressStart;
 
@@ -86,14 +92,8 @@ public class IntentInputCompass : MonoBehaviour, IIntentDirectionalInput
         RawInput.OnReleased += ReleaseStart;
     }
 
-    private void OnDisable()
-    {
-        if (RawInput == null) { return; }
 
-        RawInput.OnPressed -= PressStart;
-        RawInput.OnReleased -= ReleaseStart;
-    }
-
+    // <-- Disable 시에는 그냥 내버려두기?
 
     private void Update()
     {
@@ -130,10 +130,8 @@ public class IntentInputCompass : MonoBehaviour, IIntentDirectionalInput
                 OnPressConfirmed?.Invoke(IntentDirection);
             }
         }
-        finally
-        {
-
-        }
+        catch (OperationCanceledException) { }
+        finally { }
     }
 
 
@@ -170,6 +168,7 @@ public class IntentInputCompass : MonoBehaviour, IIntentDirectionalInput
                 OnReleaseConfirmed?.Invoke(direction);
             }
         }
+        catch (OperationCanceledException) { }
         finally
         {
             // 비동기 작업이 취소되거나 오류가 나도 반드시 Flag를 해제함
