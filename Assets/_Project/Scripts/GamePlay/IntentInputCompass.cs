@@ -92,8 +92,17 @@ public class IntentInputCompass : MonoBehaviour, IIntentDirectionalInput
         RawInput.OnReleased += ReleaseStart;
     }
 
+    private void OnDisable()
+    {
+        if (RawInput is UnityEngine.Object obj)
+        {
+            if (obj == null) { return; }
 
-    // <-- Disable 시에는 그냥 내버려두기?
+            RawInput.OnPressed -= PressStart;
+            RawInput.OnReleased -= ReleaseStart;
+        }
+    }
+
 
     private void Update()
     {

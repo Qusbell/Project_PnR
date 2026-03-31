@@ -46,19 +46,23 @@ public class RawInputCompass : NetAwareBehavior, IRawDirectionalInput
         InputActions ??= new();
         ButtonInput ??= new(InputActions.Player.Move.controls);
 
+        InputActions.Player.Enable();
+
         InputActions.Player.Move.started -= Pressed;
         InputActions.Player.Move.started += Pressed;
 
         InputActions.Player.Move.canceled -= Released;
         InputActions.Player.Move.canceled += Released;
     }
-
+        
     public override void DeactivateAt(INetContext authority)
     {
         if (!authority.IsOwner) { return; }
 
         InputActions.Player.Move.started -= Pressed;
         InputActions.Player.Move.canceled -= Released;
+
+        InputActions.Player.Disable();
     }
 
 
