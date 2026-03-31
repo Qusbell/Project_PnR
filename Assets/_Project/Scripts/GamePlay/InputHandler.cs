@@ -10,7 +10,7 @@ using UnityEngine.InputSystem;
 /// - ← → 동시 입력 중 Release 되는 현상 제거 <br/>
 /// - ←입력 중 →입력 시 아주 잠시 Release되는 현상 제거
 /// </summary>
-public class InputHandler : NetAwareBehavior, IPnREvent, ICompass
+public class InputHandler : NetAwareBehavior, IIntentDirectionalInput, ICompass
 {
     // === Field === //
 
@@ -69,6 +69,9 @@ public class InputHandler : NetAwareBehavior, IPnREvent, ICompass
     /// </summary>
     private IFlag PressingFlag { get; set; } = new BaseFlag();
 
+    /// <summary>
+    /// 실제 물리적 버튼 입력을 체크
+    /// </summary>
     private ButtonInputValidator _buttonInput;
     private ButtonInputValidator ButtonInput => _buttonInput ??= new(InputActions.Player.Move.controls);
 

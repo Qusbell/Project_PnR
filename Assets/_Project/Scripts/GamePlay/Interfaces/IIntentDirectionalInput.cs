@@ -2,9 +2,10 @@
 using UnityEngine;
 
 /// <summary>
-/// Press & Release Event : 플레이어의 눌렀을 떼, 뗄 때 행동
+/// RawInput의 의도를 파악하여, IntentInput이 된 값을 전달 <br/>
+/// 방향성 입력에 한정
 /// </summary>
-public interface IPnREvent
+public interface IIntentDirectionalInput : ICompass
 {
     public event Action<Vector2> OnPressStarted;
     public event Action<Vector2> OnPressConfirmed;

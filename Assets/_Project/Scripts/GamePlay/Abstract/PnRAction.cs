@@ -6,13 +6,13 @@ using UnityEngine;
 /// IPnREvent에 연결하여, Press와 Release 시의 처리를 실행 <br/>
 /// <-- 이거 NetAware 필요할듯?
 /// </summary>
-[RequireComponent (typeof(IPnREvent))]
+[RequireComponent (typeof(IIntentDirectionalInput))]
 public abstract class PnRAction : MonoBehaviour
 {
     // ==== Component ====
 
-    private IPnREvent _pnrEvents;
-    private IPnREvent PnREvent => _pnrEvents ??= GetComponent<IPnREvent>();
+    private IIntentDirectionalInput _pnrEvents;
+    private IIntentDirectionalInput PnREvent => _pnrEvents ??= GetComponent<IIntentDirectionalInput>();
 
 
     // ==== Life Cycle ====
