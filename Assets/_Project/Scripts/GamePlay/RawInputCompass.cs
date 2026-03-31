@@ -10,8 +10,7 @@ public class RawInputCompass : NetAwareBehavior, IRawDirectionalInput
 {
     // === Field === //
 
-    private InputSystem_Actions _inputActions;
-    private InputSystem_Actions InputActions => _inputActions;
+    private InputSystem_Actions InputActions { get; set; }
 
     // 입력 방향
     public Vector2 Direction => InputActions?.Player.Move.ReadValue<Vector2>() ?? Vector2.zero;
@@ -36,8 +35,7 @@ public class RawInputCompass : NetAwareBehavior, IRawDirectionalInput
     /// <summary>
     /// 실제 물리적 버튼 입력을 체크
     /// </summary>
-    private ButtonInputValidator _buttonInput;
-    private ButtonInputValidator ButtonInput => _buttonInput;
+    private ButtonInputValidator ButtonInput { get; set; }
 
 
     // === Method === //
@@ -46,8 +44,8 @@ public class RawInputCompass : NetAwareBehavior, IRawDirectionalInput
     {
         if (!authority.IsOwner) { return; }
 
-        _inputActions ??= new();
-        _buttonInput ??= new(InputActions.Player.Move.controls);
+        InputActions ??= new();
+        ButtonInput ??= new(InputActions.Player.Move.controls);
 
         InputActions.Player.Move.started -= Pressed;
         InputActions.Player.Move.started += Pressed;
@@ -78,6 +76,12 @@ public class RawInputCompass : NetAwareBehavior, IRawDirectionalInput
         PressingFlag.Exit();
 
         OnReleased?.Invoke();
+    }
+
+
+    private void OnDestroy()
+    {
+        InputActions?.Dispose();
     }
 
 }

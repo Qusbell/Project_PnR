@@ -97,7 +97,7 @@ public class InputHandler : NetAwareBehavior, IIntentDirectionalInput, ICompass
         // 매 프레임 현재 입력 값을 읽어오기
         Direction = InputActions.Player.Move.ReadValue<Vector2>();
 
-        // IntentInput(대각선 입력 등) 처리
+        // IntentDirection(대각선 입력 등) 처리
         if (Direction != Vector2.zero)
         {
             Intents?.SetIntent(Direction, Time.unscaledTime);

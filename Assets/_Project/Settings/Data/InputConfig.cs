@@ -24,7 +24,7 @@ public class InputConfig : ScriptableObject
     /// 예: ←를 누르다가 →를 눌렀는데, 그 과정에서 아주 잠시 Release가 발생할 수 있음 <br/>
     /// 이 때 해당 값(sec) 이하만큼 떨어져 있었다면 Release하지 않은 것으로 간주
     /// <br/> <br/>
-    /// 2026 03 24 추가: PressConfirmed + ReleaseConfirmed 양쪽 모두 영향 받음
+    /// 2026 03 24 추가: PressConfirm + ReleaseConfirmed 양쪽 모두 영향 받음
     /// </summary>
     [SerializeField]
     [Range(0.01f, 0.5f)]
