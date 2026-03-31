@@ -9,8 +9,14 @@ public class IntentBuffer
     private readonly List<(Vector2 Direction, float Time)> _intents = new(64);
     private List<(Vector2 Direction, float Time)> Intents => _intents;
 
+    /// <summary>
+    /// 최대 허용 가능한 Intent 유효 시간 (초 단위)
+    /// </summary>
     private float IntentMaxDelay { get; set; }
 
+    /// <summary>
+    /// 최소로 허용되는 대각선 입력 크기 (0~1 범위)
+    /// </summary>
     private float DeadZone { get; set; }
 
 

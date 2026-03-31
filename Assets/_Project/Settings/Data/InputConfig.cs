@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEditorInternal;
 using UnityEngine;
 
 /// <summary>
@@ -12,9 +13,11 @@ public class InputConfig : ScriptableObject
     /// 대각선 방향으로의 입력 허용 시간 <br/>
     /// 예: 0.1f값이라면, 0.1초 이내의 대각선 입력이 실제 입력 의도로써 적용될 수 있음
     /// </summary>
+    [SerializeField]
     [Header("Input Delay")]
-    [field: SerializeField]
-    public float DiagonalDelay { get; private set; } = 0.08f;
+    [Range(0.01f, 0.5f)]
+    private float _diagonalDelay = 0.08f;
+    public float DiagonalDelay => _diagonalDelay;
 
     /// <summary>
     /// 방향 전환 과정에서 잘못된 Release를 취소할 시간 <br/>
@@ -23,13 +26,17 @@ public class InputConfig : ScriptableObject
     /// <br/> <br/>
     /// 2026 03 24 추가: PressConfirmed + ReleaseConfirmed 양쪽 모두 영향 받음
     /// </summary>
-    [field: SerializeField]
-    public float InputDelay { get; private set; } = 0.05f;
+    [SerializeField]
+    [Range(0.01f, 0.5f)]
+    private float _inputDelay = 0.05f;
+    public float InputDelay => _inputDelay;
 
     /// <summary>
     /// 콘솔기기 등에서의 데드존
     /// </summary>
+    [SerializeField]
     [Header("DeadZone")]
-    [field: SerializeField]
-    public float DeadZone { get; private set; } = 0.5f;
+    [Range(0f, 1f)]
+    private float _deadZone = 0.5f;
+    public float DeadZone => _deadZone;
 }

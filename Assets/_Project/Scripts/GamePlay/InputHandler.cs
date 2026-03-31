@@ -10,19 +10,18 @@ using UnityEngine.InputSystem;
 /// - ← → 동시 입력 중 Release 되는 현상 제거 <br/>
 /// - ←입력 중 →입력 시 아주 잠시 Release되는 현상 제거
 /// </summary>
-[RequireComponent(typeof(INetActivateProxy))]
-public class InputHandler : NetAwareBehavior, IPnREvent, ICompass, INetAware
+public class InputHandler : NetAwareBehavior, IPnREvent, ICompass
 {
     // === Field === //
 
     private InputSystem_Actions _inputActions;
     private InputSystem_Actions InputActions => _inputActions ??= new();
 
-    
+
     /// <summary>
     /// 인스펙터 할당 필수
     /// </summary>
-    [field:SerializeField]
+    [field: SerializeField]
     private InputConfig Config { get; set; }
 
     // 시간 + 방향 전달
@@ -34,13 +33,7 @@ public class InputHandler : NetAwareBehavior, IPnREvent, ICompass, INetAware
     // 입력 방향
     public Vector2 Direction { get; private set; }
 
-    public bool IsActivate
-    {
-        get
-        {
-            return Direction.sqrMagnitude > 0.01f;
-        }
-    }
+    public bool IsActivate => Direction.sqrMagnitude > 0.01f;
 
 
 
@@ -53,14 +46,15 @@ public class InputHandler : NetAwareBehavior, IPnREvent, ICompass, INetAware
     private IntentBuffer _intentBuffer;
     private IntentBuffer Intents => _intentBuffer ??= new(Config.DiagonalDelay, Config.DeadZone);
 
-    // 의도 방향
+    /// <summary>
+    /// 실제 입력값이 아닌, 플레이어의 의도가 반영된 입력 방향
+    /// </summary>
     private Vector2 IntentInput
     {
         get
         {
             var direction = Intents?.GetIntent();
-            if (direction.HasValue) { return direction.Value; }
-            else                    { return Direction; }
+            return direction.HasValue ? direction.Value : Direction;
         }
     }
 
@@ -73,14 +67,13 @@ public class InputHandler : NetAwareBehavior, IPnREvent, ICompass, INetAware
     /// <-- alt + tab 사용 등으로 창을 나갈 경우, canceled 이벤트가 들어오지 않아 굳을 수 있음 <br/>
     /// 이 예외처리가 당장 필요하진 않겠지만, 이에 대해서 인지해둘 것
     /// </summary>
-    private IFlag _pressFlag;
-    private IFlag PressFlag => _pressFlag ??= new BaseFlag();
+    private IFlag PressingFlag { get; set; } = new BaseFlag();
 
     private ButtonInputValidator _buttonInput;
     private ButtonInputValidator ButtonInput => _buttonInput ??= new(InputActions.Player.Move.controls);
 
 
-    // --- 실수 Release 억제 --- //
+    // --- 실수에 의한 Release 억제 --- //
 
     /// <summary>
     /// 매 Pressed마다 ++
@@ -88,8 +81,10 @@ public class InputHandler : NetAwareBehavior, IPnREvent, ICompass, INetAware
     /// </summary>
     private int ReleaseConfirmID { get; set; } = 0;
 
-    private IFlag _pendingFlag;
-    private IFlag ReleasePending => _pendingFlag ??= new BaseFlag();
+    /// <summary>
+    /// Release Confirm 중인지 체크하는 Flag
+    /// </summary>
+    private IFlag ReleasingFlag { get; set; } = new BaseFlag();
 
 
     // === Life Cycle === //
@@ -137,7 +132,7 @@ public class InputHandler : NetAwareBehavior, IPnREvent, ICompass, INetAware
 
     private void StartPressed(InputAction.CallbackContext context)
     {
-        if (!PressFlag.TryEnter()) { return; }
+        if (!PressingFlag.TryEnter()) { return; }
 
         var direction = InputActions.Player.Move.ReadValue<Vector2>();
 
@@ -145,7 +140,7 @@ public class InputHandler : NetAwareBehavior, IPnREvent, ICompass, INetAware
 
         // Release Confirm 중이 아닐 때에만
         // Press Confirm 허용
-        if(!ReleasePending.IsBlocked)
+        if(!ReleasingFlag.IsBlocked)
         {
             OnPressStarted?.Invoke(direction);
             _ = ConfirmPress();
@@ -166,7 +161,7 @@ public class InputHandler : NetAwareBehavior, IPnREvent, ICompass, INetAware
     private void EndReleased(InputAction.CallbackContext context)
     {
         if (ButtonInput.IsPhysicallyPressed) { return; }
-        PressFlag.Exit();
+        PressingFlag.Exit();
 
         // 1. Delay 이전에 Intent 저장 (시간 경과로 인한 Intent 휘발 방지)
         var direction = IntentInput;
@@ -181,7 +176,7 @@ public class InputHandler : NetAwareBehavior, IPnREvent, ICompass, INetAware
     /// </summary>
     private async Awaitable ConfirmRelease(int ID, Vector2 direction)
     {
-        ReleasePending.Enter();
+        ReleasingFlag.Enter();
 
         try
         {
@@ -202,7 +197,7 @@ public class InputHandler : NetAwareBehavior, IPnREvent, ICompass, INetAware
         {
             // 비동기 작업이 취소되거나 오류가 나도 반드시 Flag를 해제함
             // 어쨌든 Confirm은 끝났음
-            ReleasePending.Exit();
+            ReleasingFlag.Exit();
         }
     }
 
