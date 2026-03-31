@@ -22,9 +22,9 @@ public class IntentInputCompass : MonoBehaviour, IIntentDirectionalInput
     private InputConfig Config { get; set; }
 
 
-    public Vector2 Direction => throw new NotImplementedException();
+    public Vector2 Direction => IntentDirection;
 
-    public bool IsActivate => throw new NotImplementedException();
+    public bool IsActivate => RawDirection.sqrMagnitude > 0.001f;
 
 
     public event Action<Vector2> OnPressStarted;
@@ -51,7 +51,7 @@ public class IntentInputCompass : MonoBehaviour, IIntentDirectionalInput
         get
         {
             var direction = Intents?.GetIntent();
-            return direction.HasValue ? direction.Value : Direction;
+            return direction.HasValue ? direction.Value : RawDirection;
         }
     }
 
@@ -82,8 +82,8 @@ public class IntentInputCompass : MonoBehaviour, IIntentDirectionalInput
         RawInput.OnPressed -= PressStart;
         RawInput.OnPressed += PressStart;
 
-        RawInput.OnPressed -= ReleaseStart;
-        RawInput.OnPressed += ReleaseStart;
+        RawInput.OnReleased -= ReleaseStart;
+        RawInput.OnReleased += ReleaseStart;
     }
 
     private void OnDisable()
@@ -91,7 +91,7 @@ public class IntentInputCompass : MonoBehaviour, IIntentDirectionalInput
         if (RawInput == null) { return; }
 
         RawInput.OnPressed -= PressStart;
-        RawInput.OnPressed -= ReleaseStart;
+        RawInput.OnReleased -= ReleaseStart;
     }
 
 
