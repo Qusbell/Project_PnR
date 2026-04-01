@@ -2,7 +2,7 @@
 
 public class BaseFlag : IFlag
 {
-    public bool IsBlocked { get; private set; }
+    public bool IsBlocked { get; private set; } = false;
 
     public bool TryEnter()
     {

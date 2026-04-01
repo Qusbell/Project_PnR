@@ -8,7 +8,7 @@
 [RequireComponent(typeof(ICompass))]
 public class CompassLinker : MonoBehaviour
 {
-    // ==== Component ====
+    // === Component === //
 
     private IDriver _driver;
     private IDriver Driver => _driver ??= GetComponent<IDriver>();
@@ -16,16 +16,13 @@ public class CompassLinker : MonoBehaviour
     private ITargeter _targeter;
     private ITargeter Targeter => _targeter ??= GetComponent<ITargeter>();
 
-    private ICompass _compass;
-    private ICompass Compass => _compass ??= GetComponent<ICompass>();
 
-
-    // ==== Life Cycle ====
-
+    // === Life Cycle === //
 
     private void OnEnable()
     {
-        Driver?.MoveBy(Compass);
-        Targeter?.LookBy(Compass);
+        if (TryGetComponent<IRawDirectionalInput>(out var RawCompass))       { Driver?.MoveBy(RawCompass); }
+        if (TryGetComponent<IIntentDirectionalInput>(out var IntentCompass)) { Targeter?.LookBy(IntentCompass); }
     }
+
 }

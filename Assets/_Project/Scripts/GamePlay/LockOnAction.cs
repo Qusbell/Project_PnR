@@ -21,8 +21,7 @@ public class LockOnAction : PnRAction, ITargeter
     public ITargetable Target { get; private set; }
 
     private ICompass Compass { get; set; }
-    private Vector2 Direction => Compass != null ? Compass.Direction : Vector2.zero;
-    private bool IsActivate => Direction != Vector2.zero && Compass.IsActivate;
+    private Vector2 LockOnDirection => Compass?.Direction ?? Vector2.zero;
 
 
     // OverlapCircleAll의 결과를 저장할 배열 (GC 방지)
@@ -31,8 +30,8 @@ public class LockOnAction : PnRAction, ITargeter
 
     public event Action<ITargetable> OnTargetChanged;
 
-    private IFlag _hardLock;
-    private IFlag HardLockFlag => _hardLock ??= new BaseFlag();
+    private IFlag HardLockFlag { get; set; } = new BaseFlag();
+
 
     // === Method === //
 
@@ -43,6 +42,8 @@ public class LockOnAction : PnRAction, ITargeter
             layerMask = TargetLayer,
             useLayerMask = true
         };
+
+        HardLockFlag.Enter();
     }
 
 
@@ -54,17 +55,16 @@ public class LockOnAction : PnRAction, ITargeter
         if (HardLockFlag.IsBlocked) { return; }
 
         // 소프트 락온
-        TryLockOn(Direction);
+        TryLockOn(LockOnDirection);
+    }
+
 
 #if UNITY_EDITOR
-        // 현재 대상에게 Ray
-        if (Target == null) { return; }
-        var offset = Target.Position - transform.position;
-        Vector2 direction = offset.normalized;
-        float distance = offset.magnitude;
-        Debug.DrawLine(transform.position, (Vector2)transform.position + direction * distance, Color.red);
-#endif
+    private void LateUpdate()
+    {
+        DrawRayToTarget();
     }
+#endif
 
     protected override void OnPressStarted(Vector2 direction)
     {
@@ -97,14 +97,7 @@ public class LockOnAction : PnRAction, ITargeter
 
     private void TryLockOn(Vector2 direction)
     {
-        // 비활성 상태라면 Target은 없음
-        if (!IsActivate)
-        {
-            Target = null;
-            return;
-        }
-
-        // 지속적으로 TryLockOn 시도
+        // TryLockOn 시도
         var newTarget = FindTarget(direction);
         if (newTarget != Target)
         {
@@ -189,7 +182,7 @@ public class LockOnAction : PnRAction, ITargeter
         if (GizmoEndTime_Debug < Time.time)
         {
             Gizmos.color = Color.white;
-            DrawArcGizmo(transform.position, Direction, Range, Angle);
+            DrawArcGizmo(transform.position, LockOnDirection, Range, Angle);
         }
         // 하드 락온
         else
@@ -198,6 +191,17 @@ public class LockOnAction : PnRAction, ITargeter
             DrawArcGizmo(Position_Debug, Direction_Debug, Range, Angle);
             if (Target != null) { DrawTargetGizmo(Target.Position, 1f); }
         }
+    }
+
+
+    private void DrawRayToTarget()
+    {
+        // 현재 대상에게 Ray
+        if (Target == null) { return; }
+        var offset = Target.Position - transform.position;
+        Vector2 direction = offset.normalized;
+        float distance = offset.magnitude;
+        Debug.DrawLine(transform.position, (Vector2)transform.position + direction * distance, Color.red);
     }
 
     private void DrawTargetGizmo(Vector3 center, float radius)
